@@ -2,7 +2,7 @@ import requests
 import time
 import urllib3
 
-import defines
+import shared.defines as defines
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 

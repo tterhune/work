@@ -2,7 +2,7 @@ import requests
 import urllib3
 import pprint
 
-import defines
+import shared.defines as defines
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 

@@ -40,45 +40,48 @@ def create_fabric(host, token, fabric_name):
 
     params = dict(type='Leaf-Spine')
 
-    url = defines.vURL.format(host=host, path=path, params=params, data=data, version='v1')
-    r = requests.post(url, headers=headers, json=data, verify=False)
+    url = defines.vURL.format(host=host, path=path, version='v1')
+    r = requests.post(url, headers=headers, json=data, params=params, verify=False)
     r.raise_for_status()
+    return r.json()['result']
 
 
 def assign_switch_to_fabric(host, token, fabric_uuid, switch_uuid, role):
     #  PATCH /api/v1/switches
-    #  data: [{
-    #   "uuids": ["dc4d5df9-2836-40bd-a070-7b0c5a38bdcb", "e1cfcd67-96a3-47ae-af99-bfd3d198fda6"],
-    #   "patch":[
-    #       {
-    #           "path": "/fabric_uuid",
-    #           "value":"a5f40462-f6ce-44be-98f0-43ab44257564",
-    #           "op":"replace"
-    #        }
-    #    ]
-    #  },
-    #  {
-    #       "uuids":["dc4d5df9-2836-40bd-a070-7b0c5a38bdcb"],
-    #       "patch":[
-    #           {
-    #               "path":"/role",
-    #               "value":"leaf",
-    #               "op":"replace"
-    #            }
-    #        ]
-    #  },
-    #  {
-    #       "uuids":["e1cfcd67-96a3-47ae-af99-bfd3d198fda6"],
-    #       "patch":[
-    #           {
-    #               "path":"/role",
-    #               "value":"leaf",
-    #               "op":"replace"
-    #           }
-    #       ]
-    #   }
-    # ]
-    pass
+    headers = {
+        'accept': 'application/json',
+        'Content-Type': 'application/json',
+        'Authorization': token
+    }
+
+    path = 'switches'
+    data = [
+        {
+            'uuids': [switch_uuid],
+            'patch': [
+                {
+                    'path': '/fabric_uuid',
+                    'value': fabric_uuid,
+                    'op': 'replace'
+                }
+            ]
+        },
+        {
+            'uuids': [switch_uuid],
+            'patch': [
+                {
+                    'path': '/role',
+                    'value': role,
+                    'op': 'replace'
+                }
+            ]
+        }
+    ]
+
+    url = defines.vURL.format(host=host, path=path, version='v1')
+    r = requests.patch(url, headers=headers, json=data, verify=False)
+    r.raise_for_status()
+    return r.json()['result']
 
 
 def discover_switch(host, token, hostname, afc_pwd, admin_pwd):
@@ -110,10 +113,10 @@ def discover_switch(host, token, hostname, afc_pwd, admin_pwd):
     return result
 
 
-def do_discover(afc_host, token, fabric_uuid):
+def do_discovery(afc_host, token, fabric_uuid):
     afc_pwd = 'plexxi'
     admin_pwd = 'plexxi'
-    switch_names = [
+    switches = [
         {
             'name': 'six-sw-01.lab.plexxi.com',
             'role': defines.SWITCH_ROLE_LEAF
@@ -141,8 +144,28 @@ def do_discover(afc_host, token, fabric_uuid):
         }
     ]
 
-    for switch_name, role in switch_names.items():
-        r = discover_switch(afc_host, token, switch_name, afc_pwd, admin_pwd)
+    for switch in switches:
+        r = discover_switch(afc_host, token, switch['name'], afc_pwd, admin_pwd)
         time.sleep(1)
-        assign_switch_to_fabric(afc_host, token, fabric_uuid, r['switch_uuid'], role)
+        assign_switch_to_fabric(afc_host, token, fabric_uuid, r['switch_uuid'], switch['role'])
+
+
+def display(switches):
+    print('{0: <10} {1: <10} {2: <15} {3: <15} {4: <15}'.format('Name',
+                                                                'Status',
+                                                                'IP Address',
+                                                                'Role',
+                                                                'Class'))
+
+    print('{0: <10} {1: <10} {2: <15} {3: <15} {4: <15}'.format('-'*10, '-'*10, '-'*15, '-'*15,
+                                                                '-'*15))
+
+    for switch in sorted(switches, key=lambda s: s['name']):
+        print('{0: <10} {1: <10} {2: <15} {3: <15} {4: <15}'.format(
+            switch['name'],
+            switch['status'],
+            switch['ip_address'],
+            switch['role'],
+            switch['switch_class']))
+
 

@@ -38,15 +38,17 @@ def main(argv):
         if switch['role'] == defines.SWITCH_ROLE_LEAF:
             leaf_switches.append(switch)
 
-    switch = leaf_switches[0]
-    ports = ports_module.get_ports(afc_host, token, switches=[switch['uuid']])
-    print('Ports for switch {}'.format(switch['name']))
-    for port in ports:
-        print('Port = {}'.format(pprint.pformat(port, indent=4)))
+    for leaf in leaf_switches:
+        print('Leaf switch: {}'.format(leaf['name']))
 
-    provisioned_lags = lags_module.get_lags(afc_host, token, lag_type=defines.LAG_TYPE_PROVISIONED)
-    for lag in provisioned_lags:
-        print('Provisioned LAG = {}'.format(pprint.pformat(lag, indent=4)))
+    # ports = ports_module.get_ports(afc_host, token, switches=[switch['uuid']])
+    # print('Ports for switch {}'.format(switch['name']))
+    # for port in ports:
+    #     print('Port = {}'.format(pprint.pformat(port, indent=4)))
+
+    # provisioned_lags = lags_module.get_lags(afc_host, token, lag_type=defines.LAG_TYPE_PROVISIONED)
+    # for lag in provisioned_lags:
+    #     print('Provisioned LAG = {}'.format(pprint.pformat(lag, indent=4)))
 
     internal_lags = lags_module.get_lags(afc_host, token, lag_type=defines.LAG_TYPE_INTERNAL)
     # for lag in internal_lags:
@@ -58,8 +60,8 @@ def main(argv):
     # get_switch_policies(switch, cookie_jar)
     # switch_logout(switch, cookie_jar)
 
-    q = policies_module.create_qualifier(afc_host, token, 'my-qualifier11', vlans='100')
-    p = policies_module.create_qos_policy(afc_host, token, 'my-policy11', 5, 5, [q])
+    # q = policies_module.create_qualifier(afc_host, token, 'my-qualifier11', vlans='100')
+#     p = policies_module.create_qos_policy(afc_host, token, 'my-policy11', 5, 5, [q])
 
 
 if __name__ == '__main__':

@@ -24,28 +24,39 @@ def main(argv):
     
     switches = switch_module.get_switches(afc_host, token)
     switch_module.display(switches)
+
+    leaf_switch = None
     leaf_switches = list()
     for switch in switches:
         if switch['role'] == defines.SWITCH_ROLE_LEAF:
             leaf_switches.append(switch)
+            if switch['status'] == 'SYNCED':
+                leaf_switch = switch
+                break
 
-    # ports = ports_module.get_ports(afc_host, token, switches=[switch['uuid']])
-    # print('Ports for switch {}'.format(switch['name']))
-    # for port in ports:
-    #     print('Port = {}'.format(pprint.pformat(port, indent=4)))
-
-    plag = None
-    provisioned_lags = lags_module.get_lags(afc_host, token, lag_type=defines.LAG_TYPE_PROVISIONED)
-    if provisioned_lags:
-        plag = provisioned_lags[0]
+    port = None
+    if leaf_switch:
+        ports = ports_module.get_ports(afc_host, token, switches=[leaf_switch['uuid']])
+        for port in ports:
+            if port['type'] == 'access' and port['admin_state'] == 'disabled':
+                print('Port = {}'.format(pprint.pformat(port, indent=4)))
+                break
+    # plag = None
+    # provisioned_lags = lags_module.get_lags(afc_host, token, lag_type=defines.LAG_TYPE_PROVISIONED)
+    # if provisioned_lags:
+    #    plag = provisioned_lags[0]
 
     policy = None
     policies = policies_module.get_qos_policies(afc_host, token)
     if policies:
         policy = policies[0]
 
-    if plag and policy:
-        lags_module.apply_policies_to_lag(afc_host, token, plag, [policy])
+    if port:
+        ports_module.apply_policies_to_port(afc_host, token, port, [policy])
+
+    # if plag and policy:
+    #     lags_module.apply_policies_to_lag(afc_host, token, plag, [policy])
+    # lags_module.apply_policies_to_lag(afc_host, token, plag, [policy])
 
     # for lag in provisioned_lags:
     #     print('Provisioned LAG = {}'.format(pprint.pformat(lag, indent=4)))

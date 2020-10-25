@@ -1,3 +1,4 @@
+import copy
 import requests
 import urllib3
 
@@ -35,10 +36,13 @@ def apply_policies_to_port(host, token, port, policies):
         'accept': 'application/json',
         'Authorization': token,
         'Content-Type': 'application/json'
-    } 
+    }
+
+    data = copy.deepcopy(port)
+    data['qos_ingress_policies'] = [p['uuid'] for p in policies]
 
     url = defines.vURL.format(host=host, path=path, version='v1')
-    r = requests.put(url, headers=headers, data=policies, verify=False)
+    r = requests.put(url, headers=headers, json=data, verify=False)
     r.raise_for_status()
 
     print('Succeeded ({}) when applying policies {} to port = {}'.format(
@@ -54,10 +58,12 @@ def delete_policies_from_port(host, token, port):
         'accept': 'application/json',
         'Authorization': token,
         'Content-Type': 'application/json'
-    } 
-    policies = []
+    }
+
+    data = copy.deepcopy(port)
+    data['qos_ingress_policies'] = []
 
     url = defines.vURL.format(host=host, path=path, version='v1')
-    r = requests.put(url, headers=headers, data=policies, verify=False)
+    r = requests.put(url, headers=headers, json=data, verify=False)
     r.raise_for_status()
     print('Succeeded ({}) deleting ALL policies from port = {}'.format(r.status_code, port['name']))

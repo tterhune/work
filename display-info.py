@@ -4,6 +4,7 @@ import sys
 import urllib3
 
 import policies.afc as afc_module
+import policies.policy as policy_module
 import policies.switches as switch_module
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
@@ -18,6 +19,10 @@ def main(argv):
     token = afc_module.get_token(afc_host)
     switches = switch_module.get_switches(afc_host, token)
     switch_module.display(switches)
+
+    qualifiers = policy_module.get_qualifiers(afc_host, token)
+    policies = policy_module.get_qos_policies(afc_host, token)
+    policy_module.display(policies, qualifiers)
 
 
 if __name__ == '__main__':

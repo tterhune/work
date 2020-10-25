@@ -7,6 +7,38 @@ import shared.defines as defines
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 
+def get_qualifiers(host, token):
+    path = 'qualifiers'
+    headers = {
+        'accept': 'application/json',
+        'Content-Type': 'application/json',
+        'Authorization': token
+    }
+
+    url = defines.vURL.format(host=host, path=path, version='v1')
+    r = requests.get(url, headers=headers, verify=False)
+    r.raise_for_status()
+
+    qualifiers = r.json()['result']
+    return qualifiers
+
+
+def get_qos_policies(host, token):
+    path = 'policies/qos'
+    headers = {
+        'accept': 'application/json',
+        'Content-Type': 'application/json',
+        'Authorization': token
+    }
+
+    url = defines.vURL.format(host=host, path=path, version='v1')
+    r = requests.get(url, headers=headers, verify=False)
+    r.raise_for_status()
+
+    policies = r.json()['result']
+    return policies
+
+
 def create_qualifier(host, token, name, vlans):
     print(f'Creating qualifier: {name} with vlans: {vlans}')
     
@@ -62,3 +94,13 @@ def create_qos_policy(host, token, policy_name, local_priority, pcp, qualifier_u
 
     print(f'Created policy UUID = {policy_uuid}')
     return policy_uuid
+
+
+def display(policies, qualifiers):
+    print('Policy Info:')
+    for policy in policies:
+        print('Policy: {}'.format(pprint.pformat(policy, indent=4)))
+
+    print('Qualifier Info:')
+    for qualifier in qualifiers:
+        print('Qualifier: {}'.format(pprint.pformat(qualifier, indent=4)))

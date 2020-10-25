@@ -1,3 +1,4 @@
+import copy
 import requests
 import urllib3
 
@@ -29,6 +30,12 @@ def get_lags(host, token, lag_type=None):
 def apply_policies_to_lag(host, token, lag, policies):
     path = 'lags/{}'.format(lag['uuid'])
 
+    data = copy.deepcopy(lag)
+    data['qos_ingress_policies'] = [p['uuid'] for p in policies]
+
+    for p in policies:
+        print('Applying policy {} to lag {}'.format(p['name'], lag['name']))
+
     headers = {
         'accept': 'application/json',
         'Authorization': token,
@@ -36,7 +43,7 @@ def apply_policies_to_lag(host, token, lag, policies):
     } 
 
     url = defines.vURL.format(host=host, path=path, version='v1')
-    r = requests.put(url, headers=headers, data=policies, verify=False)
+    r = requests.put(url, headers=headers, json=data, verify=False)
     r.raise_for_status()
 
     print('Succeeded ({}) applying policies {} to LAG: {} of type: {}'.format(
@@ -55,8 +62,10 @@ def delete_policies_from_lag(host, token, lag):
         'Content-Type': 'application/json'
     } 
 
-    policies = []
+    data = copy.deepcopy(lag)
+    data['qos_ingress_policies'] = []
+
     url = defines.vURL.format(host=host, path=path, version='v1')
-    r = requests.put(url, headers=headers, data=policies, verify=False)
+    r = requests.put(url, headers=headers, json=data, verify=False)
     r.raise_for_status()
     print('Succeeded ({}) deleting ALL policies from LAG = {}'.format(r.status_code, lag['name']))

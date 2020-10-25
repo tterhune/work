@@ -7,6 +7,22 @@ import shared.defines as defines
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 
+def get_lag(host, token, lag_uuid):
+    path = 'lags/{}'.format(lag_uuid)
+    headers = {
+        'accept': 'application/json',
+        'Authorization': token,
+        'Content-Type': 'application/json'
+    }
+
+    url = defines.vURL.format(host=host, path=path, version='v1')
+    r = requests.get(url, headers=headers, verify=False)
+    r.raise_for_status()
+
+    lag = r.json()['result']
+    return lag
+
+
 def get_lags(host, token, lag_type=None):
     path = 'lags'
     headers = {
@@ -25,6 +41,39 @@ def get_lags(host, token, lag_type=None):
 
     lags = r.json()['result']
     return lags
+
+
+def patch_lag_policies(host, token, lag, policies, op):
+    path = 'lags'
+
+    headers = {
+        'accept': 'application/json',
+        'Authorization': token,
+        'Content-Type': 'application/json'
+    }
+
+    policy_uuids = [p['uuid'] for p in policies]
+    data = [
+        {
+            'uuids': [lag['uuid']],
+            'patch': [
+                {
+                    'path': '/qos_ingress_policies',
+                    'value': policy_uuids,
+                    'op': op
+                }
+            ]
+        }
+    ]
+
+    url = defines.vURL.format(host=host, path=path, version='v1')
+    r = requests.patch(url, headers=headers, json=data, verify=False)
+    r.raise_for_status()
+
+    print('Succeeded ({}) when applying policies: {} to LAG: {}'.format(
+        r.status_code,
+        ', '.join([p['name'] for p in policies]),
+        lag['name']))
 
 
 def apply_policies_to_lag(host, token, lag, policies):

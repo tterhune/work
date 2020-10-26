@@ -48,10 +48,8 @@ def main(afc_host):
 
     print('Using port: {} on switch: {}'.format(port['name'], leaf_switch['name']))
     # Create qualifier and policy
-    qualifier_uuid = policies_module.create_qualifier(afc_host, token, 'simple-add-test-qual6',
-                                                      '100')
-    policy_uuid = policies_module.create_qos_policy(afc_host, token, 'simple-add-test-policy', 4, 5,
-                                                    [qualifier_uuid])
+    qualifier_uuid = policies_module.create_qualifier(afc_host, token, '100')
+    policy_uuid = policies_module.create_qos_policy(afc_host, token, 4, 5, [qualifier_uuid])
 
     policy = policies_module.get_qos_policy(afc_host, token, policy_uuid)
 

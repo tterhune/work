@@ -1,6 +1,7 @@
+import pprint
 import requests
 import urllib3
-import pprint
+import uuid
 
 import shared.defines as defines
 import policies.lags as lags_module
@@ -8,6 +9,13 @@ import policies.ports as ports_module
 import policies.switches as switch_module
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+
+
+def generate_unique_name(prefix=None):
+    unique_name = uuid.uuid4().hex
+    if prefix:
+        unique_name = unique_name + prefix
+    return unique_name
 
 
 def get_qualifiers(host, token):
@@ -100,7 +108,10 @@ def delete_qualifier(host, token, qualifier):
     r.raise_for_status()
 
 
-def create_qualifier(host, token, name, vlans):
+def create_qualifier(host, token, vlans, name=None):
+    if not name:
+        name = generate_unique_name('qual')
+
     path = 'qualifiers'
     print(f'Creating qualifier: {name} with vlans: {vlans}')
     
@@ -125,7 +136,10 @@ def create_qualifier(host, token, name, vlans):
     return qualifier_uuid
 
 
-def create_qos_policy(host, token, policy_name, local_priority, pcp, qualifier_uuids):
+def create_qos_policy(host, token, local_priority, pcp, qualifier_uuids, policy_name=None):
+    if not policy_name:
+        policy_name = generate_unique_name('policy')
+
     print(f'Creating policy: {policy_name} with LP/PCP: {local_priority} {pcp}')
 
     qualifiers = [{'object_uuid': quuid, 'object_type': 'qualifier'} for quuid in qualifier_uuids]

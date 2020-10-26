@@ -136,11 +136,12 @@ def display(switch, classifiers, policies):
     else:
         print('{0: <12} {1}'.format('Classifiers:', '=> no classifiers configured'))
 
+    print('\n')
+
     if policies:
-        print('\nPolicies:')
+        print('Policies:')
         for policy in policies:
             print('\t{}'.format(pprint.pformat(policy, indent=4)))
     else:
         print('{0: <12} {1}'.format('Policies:', '=> no policies configured'))
 
-    print('\n')

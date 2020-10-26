@@ -14,7 +14,7 @@ urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 def generate_unique_name(prefix=None):
     unique_name = uuid.uuid4().hex
     if prefix:
-        unique_name = unique_name + prefix
+        unique_name = prefix + '-' + unique_name
     return unique_name
 
 

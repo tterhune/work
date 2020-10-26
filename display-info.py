@@ -31,8 +31,7 @@ def main(afc_host):
 
 if __name__ == '__main__':
     if len(sys.argv) < 2:
-        print('WARNING: Usage: {} <AFC host>'.format(sys.argv[0]))
-        print('Defaulting AFC to: \'localhost\' ')
+        print('WARNING: Usage: {} [<AFC host>], default is \'localhost\''.format(sys.argv[0]))
         my_afc_host = 'localhost'
     else:
         my_afc_host = sys.argv[1]

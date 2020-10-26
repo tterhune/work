@@ -5,6 +5,7 @@ import sys
 import urllib3
 
 import policies.afc as afc_module
+import policies.aruba as aruba_module
 import shared.defines as defines
 import policies.lags as lags_module
 import policies.policy as policies_module
@@ -39,6 +40,24 @@ def cleanup_qualifiers(afc_host, token, qualifiers):
         policies_module.delete_qualifier(afc_host, token, qualifier)
 
 
+def cleanup_switch(switch):
+    cookie_jar = aruba_module.switch_login(switch)
+
+    classifiers = aruba_module.get_switch_classes(switch, cookie_jar)
+    for classifier in classifiers:
+        print('Found classifier: {} on switch: {}'.format(classifier['name'], switch['name']))
+
+        aruba_module.delete_classifier(switch, cookie_jar, classifier)
+
+    policies = aruba_module.get_switch_policies(switch, cookie_jar)
+    for policy in policies:
+        print('Found policy: {} on switch: {}'.format(policy['name'], switch['name']))
+
+        aruba_module.delete_policy(switch, cookie_jar, policy)
+
+    aruba_module.switch_logout(switch, cookie_jar)
+
+
 def main(argv):
     if len(argv) < 2:
         print('Usage: {} <AFC host>'.format(argv[0]))
@@ -52,6 +71,10 @@ def main(argv):
 
     qualifiers = policies_module.get_qualifiers(afc_host, token)
     cleanup_qualifiers(afc_host, token, qualifiers)
+
+    switches = switch_module.get_switches(afc_host, token)
+    for switch in switches:
+        cleanup_switch(switch)
 
 
 if __name__ == '__main__':

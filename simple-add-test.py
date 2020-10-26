@@ -2,12 +2,12 @@
 
 import pprint
 import sys
+import time
 import urllib3
 
 import policies.afc as afc_module
 import policies.aruba as aruba_module
 import shared.defines as defines
-import policies.lags as lags_module
 import policies.policy as policies_module
 import policies.ports as ports_module
 import policies.switches as switch_module
@@ -25,8 +25,11 @@ def main(argv):
 
     # Display some info
     switches = switch_module.get_switches(afc_host, token)
-    switch_module.display(switches)
+    fabrics = switch_module.get_fabrics(afc_host, token)
+    switch_module.display(fabrics, switches)
     policies_module.display_all(afc_host, token)
+
+    time.sleep(1)
 
     # Find a leaf switch
     leaf_switch = None
@@ -48,13 +51,22 @@ def main(argv):
                 print('Port = {}'.format(pprint.pformat(port, indent=4)))
                 break
 
+    print('Using port: {} on switch: {}'.format(port['name'], leaf_switch['name']))
     # Create qualifier and policy
-    qualifier = policies_module.create_qualifier(afc_host, token, 'simple-add-test-qual', [100])
-    policy = policies_module.create_qos_policy(afc_host, token, 'simple-add-test-policy', 4, 5,
-                                               [qualifier['uuid']])
+    qualifier_uuid = policies_module.create_qualifier(afc_host, token, 'simple-add-test-qual6',
+                                                      '100')
+    policy_uuid = policies_module.create_qos_policy(afc_host, token, 'simple-add-test-policy', 4, 5,
+                                                    [qualifier_uuid])
+
+    policy = policies_module.get_qos_policy(afc_host, token, policy_uuid)
+
+    time.sleep(1)
+
+    print('\n\t{} ADDING POLICY: {} to PORT: {} {}\n'.format('-' * 10, policy['name'],
+                                                             port['name'], '-' * 10))
 
     # Apply policy to port
-    ports_module.patch_port_policies(afc_host, token, port, policy, defines.PATCH_OP_ADD)
+    ports_module.patch_port_policies(afc_host, token, port, [policy], defines.PATCH_OP_ADD)
     print('Successfully Added Policy: {} Port: {} Switch: {}'.format(policy['name'], port['name'],
           leaf_switch['name']))
 
@@ -62,7 +74,7 @@ def main(argv):
     policies_module.display_all(afc_host, token)
 
     port = ports_module.get_port(afc_host, token, port['uuid'])
-    print('Port after applying Policy: {}'.format(pprint.pformat(port, indent=4)))
+    print('\nPort after applying Policy: {}\n'.format(pprint.pformat(port, indent=4)))
 
     # Display switch info
     cookie_jar = aruba_module.switch_login(leaf_switch)
@@ -71,18 +83,23 @@ def main(argv):
     policies = aruba_module.get_switch_policies(leaf_switch, cookie_jar)
     aruba_module.display(leaf_switch, classifiers, policies)
 
-    aruba_module.switch_logout(leaf_switch, cookie_jar)
+    # aruba_module.switch_logout(leaf_switch, cookie_jar)
 
-    ports_module.patch_port_policies(afc_host, token, port, policy, defines.PATCH_OP_REMOVE)
+    print('\n\t{} DELETING POLICY: {} from PORT: {} {}\n'.format('-' * 10, policy['name'],
+                                                                 port['name'], '-' * 10))
+
+    time.sleep(2)
+
+    ports_module.patch_port_policies(afc_host, token, port, [policy], defines.PATCH_OP_REMOVE)
     port = ports_module.get_port(afc_host, token, port['uuid'])
-    print('Port after deleting Policy: {}'.format(pprint.pformat(port, indent=4)))
+    print('\nPort after deleting Policy: {}'.format(pprint.pformat(port, indent=4)))
 
-    print('Cleaning up all qualifiers and policies')
+    print('\nCleaning up all qualifiers and policies')
     policies_module.cleanup_qualifiers(afc_host, token)
     policies_module.cleanup_policies(afc_host, token)
 
     # Display switch info
-    cookie_jar = aruba_module.switch_login(leaf_switch)
+    # cookie_jar = aruba_module.switch_login(leaf_switch)
 
     classifiers = aruba_module.get_switch_classes(leaf_switch, cookie_jar)
     policies = aruba_module.get_switch_policies(leaf_switch, cookie_jar)

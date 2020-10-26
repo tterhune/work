@@ -41,6 +41,21 @@ def get_qos_policies(host, token):
     return policies
 
 
+def get_qos_policy(host, token, policy_uuid):
+    path = 'policies/qos/{}'.format(policy_uuid)
+    headers = {
+        'accept': 'application/json',
+        'Content-Type': 'application/json',
+        'Authorization': token
+    }
+
+    url = defines.vURL.format(host=host, headers=headers, path=path, version='v1')
+    r = requests.get(url, headers=headers, verify=False)
+    r.raise_for_status()
+
+    policy = r.json()['result']
+    return policy
+
 def delete_policy(host, token, policy):
     path = 'policies/qos/{}'.format(policy['uuid'])
 
@@ -134,7 +149,7 @@ def cleanup_policies(afc_host, token):
     policies = get_qos_policies(afc_host, token)
     for policy in policies:
         print('Policy: {}'.format(pprint.pformat(policy, indent=4)))
-        for intf in policy['interfaces']:
+        for intf in policy.get('interfaces', []):
             print('Intf: {}/{}'.format(intf['object_type'], intf['object_uuid']))
             if intf['object_type'] == 'port':
                 port = ports_module.get_port(afc_host, token, intf['object_uuid'])
@@ -144,12 +159,14 @@ def cleanup_policies(afc_host, token):
                 lag = lags_module.get_lag(afc_host, token, intf['object_uuid'])
                 lags_module.patch_lag_policies(afc_host, token, lag, policy['uuid'],
                                                defines.PATCH_OP_REMOVE)
+        delete_policy(afc_host, token, policy)
 
 
 def cleanup_qualifiers(afc_host, token):
     qualifiers = get_qualifiers(afc_host, token)
     for qualifier in qualifiers:
         print('Qualifier: {}'.format(pprint.pformat(qualifier, indent=4)))
+        delete_qualifier(afc_host, token, qualifier)
 
 
 def display(policies, qualifiers):

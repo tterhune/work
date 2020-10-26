@@ -23,6 +23,22 @@ def get_fabrics(host, token):
     return fabrics
 
 
+def get_switch(host, token, switch_uuid):
+    path = 'switches/{}'.format(switch_uuid)
+    headers = {
+        'accept': 'application/json',
+        'Authorization': token,
+        'Content-Type': 'application/json'
+    }
+
+    url = defines.vURL.format(host=host, path=path, version='v1')
+    r = requests.get(url, headers=headers, verify=False)
+    r.raise_for_status()
+
+    switch = r.json()['result']
+    return switch
+
+
 def get_switches(host, token):
     path = 'switches'
     headers = {

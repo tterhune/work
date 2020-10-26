@@ -19,7 +19,7 @@ def main(afc_host):
 
     qualifiers = policy_module.get_qualifiers(afc_host, token)
     policies = policy_module.get_qos_policies(afc_host, token)
-    policy_module.display(policies, qualifiers)
+    policy_module.display(afc_host, token, policies, qualifiers)
 
 
 if __name__ == '__main__':

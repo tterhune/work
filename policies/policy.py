@@ -5,6 +5,7 @@ import pprint
 import shared.defines as defines
 import policies.lags as lags_module
 import policies.ports as ports_module
+import policies.switches as switch_module
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
@@ -38,8 +39,8 @@ def get_qos_policies(host, token):
         'tags': True
     }
 
-    url = defines.vURL.format(host=host, headers=headers, path=path, params=params, version='v1')
-    r = requests.get(url, headers=headers, verify=False)
+    url = defines.vURL.format(host=host, headers=headers, path=path, version='v1')
+    r = requests.get(url, headers=headers, params=params, verify=False)
     r.raise_for_status()
 
     policies = r.json()['result']
@@ -59,8 +60,8 @@ def get_qos_policy(host, token, policy_uuid):
         'tags': True
     }
 
-    url = defines.vURL.format(host=host, headers=headers, params=params, path=path, version='v1')
-    r = requests.get(url, headers=headers, verify=False)
+    url = defines.vURL.format(host=host, headers=headers, path=path, version='v1')
+    r = requests.get(url, headers=headers, verify=False, params=params)
     r.raise_for_status()
 
     policy = r.json()['result']
@@ -180,7 +181,7 @@ def cleanup_qualifiers(afc_host, token):
         delete_qualifier(afc_host, token, qualifier)
 
 
-def display(policies, qualifiers):
+def display(afc_host, token, policies, qualifiers):
     print('\nAFC Policy Info:')
 
     if qualifiers:
@@ -193,7 +194,27 @@ def display(policies, qualifiers):
     if policies:
         print('AFC Policy:')
         for policy in policies:
+            intfs = policy.get('interfaces', [])
+            ports = []
+            lags = []
+            for intf in intfs:
+                if intf['object_type'] == 'port':
+                    port = ports_module.get_port(afc_host, token, intf['object_uuid'])
+                    ports.append(port)
+                elif intf['object_type'] == 'lag':
+                    lag = lags_module.get_lag(afc_host, token, intf['object_uuid'])
+                    lags.append(lag)
             print('\tPolicy: {}'.format(pprint.pformat(policy, indent=4)))
+
+            port_str = ''
+            for p in ports:
+                s = switch_module.get_switch(afc_host, token, p['switch_uuid'])
+                port_str += '{}: {} {} '.format(s['name'], p['name'], p['uuid'])
+
+            lag_str = [(lg['name'], lg['uuid']) for lg in lags]
+
+            print('\tPorts: {}'.format(port_str))
+            print('\tLAGs: {}'.format(lag_str))
     else:
         print('{0: <15} {1}'.format('AFC Policy:', '=> no policies configured'))
 
@@ -202,5 +223,5 @@ def display_all(afc_host, token):
     qualifiers = get_qualifiers(afc_host, token)
     policies = get_qos_policies(afc_host, token)
 
-    display(policies, qualifiers)
+    display(afc_host, token, policies, qualifiers)
 

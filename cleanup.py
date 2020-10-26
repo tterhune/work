@@ -19,19 +19,21 @@ def cleanup_policies(afc_host, token, policies):
     for policy in policies:
         print('Delete Policy: {}'.format(pprint.pformat(policy, indent=4)))
 
-        for intf in policy['interfaces']:
+        for intf in policy.get('interfaces', []):
             print('Disassociate Intf: {}/{} from policy: {}'.format(intf['object_type'],
                                                                     intf['object_uuid'],
                                                                     policy['name']))
 
             if intf['object_type'] == 'port':
                 port = ports_module.get_port(afc_host, token, intf['object_uuid'])
-                ports_module.patch_port_policies(afc_host, token, port, policy['uuid'],
+                ports_module.patch_port_policies(afc_host, token, port, [policy],
                                                  defines.PATCH_OP_REMOVE)
             if intf['object_type'] == 'lag':
                 lag = lags_module.get_lag(afc_host, token, intf['object_uuid'])
-                lags_module.patch_lag_policies(afc_host, token, lag, policy['uuid'],
+                lags_module.patch_lag_policies(afc_host, token, lag, [policy],
                                                defines.PATCH_OP_REMOVE)
+
+        policies_module.delete_policy(afc_host, token, policy)
 
 
 def cleanup_qualifiers(afc_host, token, qualifiers):

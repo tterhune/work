@@ -44,14 +44,14 @@ def cleanup_switch(switch):
     cookie_jar = aruba_module.switch_login(switch)
 
     classifiers = aruba_module.get_switch_classes(switch, cookie_jar)
-    for classifier in classifiers:
-        print('Found classifier: {} on switch: {}'.format(classifier['name'], switch['name']))
+    for name, classifier in classifiers.items():
+        print('Found classifier: {} on switch: {}'.format(name, switch['name']))
 
         aruba_module.delete_classifier(switch, cookie_jar, classifier)
 
     policies = aruba_module.get_switch_policies(switch, cookie_jar)
-    for policy in policies:
-        print('Found policy: {} on switch: {}'.format(policy['name'], switch['name']))
+    for name, policy in policies.items():
+        print('Found policy: {} on switch: {}'.format(name, switch['name']))
 
         aruba_module.delete_policy(switch, cookie_jar, policy)
 

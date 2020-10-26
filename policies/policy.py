@@ -33,7 +33,12 @@ def get_qos_policies(host, token):
         'Authorization': token
     }
 
-    url = defines.vURL.format(host=host, headers=headers, path=path, version='v1')
+    params = {
+        'interfaces': True,
+        'tags': True
+    }
+
+    url = defines.vURL.format(host=host, headers=headers, path=path, params=params, version='v1')
     r = requests.get(url, headers=headers, verify=False)
     r.raise_for_status()
 
@@ -49,12 +54,18 @@ def get_qos_policy(host, token, policy_uuid):
         'Authorization': token
     }
 
-    url = defines.vURL.format(host=host, headers=headers, path=path, version='v1')
+    params = {
+        'interfaces': True,
+        'tags': True
+    }
+
+    url = defines.vURL.format(host=host, headers=headers, params=params, path=path, version='v1')
     r = requests.get(url, headers=headers, verify=False)
     r.raise_for_status()
 
     policy = r.json()['result']
     return policy
+
 
 def delete_policy(host, token, policy):
     path = 'policies/qos/{}'.format(policy['uuid'])
@@ -172,19 +183,19 @@ def cleanup_qualifiers(afc_host, token):
 def display(policies, qualifiers):
     print('\nAFC Policy Info:')
 
-    print('\nAFC Qualifier Info:')
-    for qualifier in qualifiers:
-        print('Qualifier: {}'.format(pprint.pformat(qualifier, indent=4)))
+    if qualifiers:
+        print('AFC Qualifier:')
+        for qualifier in qualifiers:
+            print('\tQualifier: {}'.format(pprint.pformat(qualifier, indent=4)))
+    else:
+        print('{0: <15} {1}'.format('AFC Qualifier:', '=> no qualifiers configured'))
 
-    if not qualifiers:
-        print('\t... no qualifiers configured')
-
-    print('\nAFC Policy Info:')
-    for policy in policies:
-        print('\tPolicy: {}'.format(pprint.pformat(policy, indent=4)))
-
-    if not policies:
-        print('\t... no policies configured')
+    if policies:
+        print('AFC Policy:')
+        for policy in policies:
+            print('\tPolicy: {}'.format(pprint.pformat(policy, indent=4)))
+    else:
+        print('{0: <15} {1}'.format('AFC Policy:', '=> no policies configured'))
 
 
 def display_all(afc_host, token):

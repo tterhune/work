@@ -129,18 +129,18 @@ def display(switch, classifiers, policies):
     print('\nPolicies and Classifiers on switch {} ({}):'.format(switch['name'],
                                                                  switch['ip_address']))
 
-    print('Classifiers:')
-    for classifier in classifiers:
-        print('\t{}'.format(pprint.pformat(classifier, indent=4)))
+    if classifiers:
+        print('Classifiers:')
+        for classifier in classifiers:
+            print('\t{}'.format(pprint.pformat(classifier, indent=4)))
+    else:
+        print('{0: <12} {1}'.format('Classifiers:', '=> no classifiers configured'))
 
-    if not classifiers:
-        print('\t... no classifiers configured')
-
-    print('\nPolicies:')
-    for policy in policies:
-        print('\t{}'.format(pprint.pformat(policy, indent=4)))
-
-    if not policies:
-        print('\t... no policies configured')
+    if policies:
+        print('\nPolicies:')
+        for policy in policies:
+            print('\t{}'.format(pprint.pformat(policy, indent=4)))
+    else:
+        print('{0: <12} {1}'.format('Policies:', '=> no policies configured'))
 
     print('\n')

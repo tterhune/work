@@ -18,11 +18,11 @@ def main(argv):
     fabric_name = argv[2]
     token = afc_module.get_token(afc_host)
     
-    fabric_uuid = switch_module.create_fabric(afc_host, token, fabric_name)
+    fabric = switch_module.create_fabric(afc_host, token, fabric_name)
 
-    print(f'Fabric {fabric_name}: {fabric_uuid}')
+    print('Fabric {}: {}'.format(fabric['uuid'], fabric['name']))
 
-    switch_module.do_discovery(afc_host, token, fabric_uuid)
+    switch_module.do_discovery(afc_host, token, fabric['uuid'])
 
     switches = switch_module.get_switches(afc_host, token)
     for switch in switches:

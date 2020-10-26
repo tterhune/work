@@ -7,6 +7,22 @@ import shared.defines as defines
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 
+def get_fabrics(host, token):
+    path = 'fabrics'
+    headers = {
+        'accept': 'application/json',
+        'Authorization': token,
+        'Content-Type': 'application/json'
+    }
+
+    url = defines.vURL.format(host=host, path=path, version='v1')
+    r = requests.get(url, headers=headers, verify=False)
+    r.raise_for_status()
+
+    fabrics = r.json()['result']
+    return fabrics
+
+
 def get_switches(host, token):
     path = 'switches'
     headers = {
@@ -35,10 +51,12 @@ def create_fabric(host, token, fabric_name):
 
     data = {
         'name': fabric_name,
-        'description': '',
+        'description': 'Fabric created by Tim script',
+        'password': 'plexxi',
+
     }
 
-    params = dict(type='Leaf-Spine')
+    params = dict(fabric_class='Leaf-Spine')
 
     url = defines.vURL.format(host=host, path=path, version='v1')
     r = requests.post(url, headers=headers, json=data, params=params, verify=False)
@@ -150,7 +168,15 @@ def do_discovery(afc_host, token, fabric_uuid):
         assign_switch_to_fabric(afc_host, token, fabric_uuid, r['switch_uuid'], switch['role'])
 
 
-def display(switches):
+def display(fabrics, switches):
+    print('\nFabrics:')
+    for fabric in fabrics:
+        print('\tName: {} UUID: {}'.format(fabric['name'], fabric['uuid']))
+
+    if not fabrics:
+        print('\t... no fabrics defined')
+
+    print('\n')
     print('{0: <10} {1: <10} {2: <15} {3: <15} {4: <15}'.format('Name',
                                                                 'Status',
                                                                 'IP Address',
@@ -168,4 +194,5 @@ def display(switches):
             switch['role'],
             switch['switch_class']))
 
-
+    if not switches:
+        print('\t... no switches defined')

@@ -19,7 +19,8 @@ def main(argv):
     afc_host = argv[1]
     token = afc_module.get_token(afc_host)
     switches = switch_module.get_switches(afc_host, token)
-    switch_module.display(switches)
+    fabrics = switch_module.get_fabrics(afc_host, token)
+    switch_module.display(fabrics, switches)
 
     qualifiers = policy_module.get_qualifiers(afc_host, token)
     policies = policy_module.get_qos_policies(afc_host, token)

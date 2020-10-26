@@ -74,8 +74,9 @@ def patch_port_policies(host, token, port, policies, op):
     r = requests.patch(url, headers=headers, json=data, verify=False)
     r.raise_for_status()
 
-    print('Succeeded ({}) when applying policies {} to port = {}'.format(
+    print('Succeeded ({}) Patch Operation: {} for Policies: {} on Port: {}'.format(
         r.status_code,
+        op,
         ', '.join([p['name'] for p in policies]),
         port['name']))
 

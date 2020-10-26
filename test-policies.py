@@ -83,9 +83,9 @@ def main(argv):
             port['name'],
             leaf_switch['name']))
 
-    ports_module.delete_policies_from_port(afc_host, token, port)
+    # ports_module.patch_port_policies(afc_host, token, port, policies, defines.PATCH_OP_ADD)
 
-    ports_module.patch_port_policies(afc_host, token, port, policies, defines.PATCH_OP_ADD)
+    ports_module.delete_policies_from_port(afc_host, token, port)
 
     # if plag and policy:
     #     lags_module.apply_policies_to_lag(afc_host, token, plag, [policy])

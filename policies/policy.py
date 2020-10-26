@@ -39,10 +39,26 @@ def get_qos_policies(host, token):
     return policies
 
 
+def delete_qualifier(host, token, qualifier):
+    path = 'qualifiers/{}'.format(qualifier['uuid'])
+
+    print('Deleting qualifier: {}/{}'.format(qualifier['name'], qualifier['uuid']))
+
+    headers = {
+        'accept': 'application/json',
+        'Content-Type': 'application/json',
+        'Authorization': token
+    }
+
+    url = defines.vURL.format(host=host, path=path, version='v1')
+    r = requests.delete(url, headers=headers, verify=False)
+    r.raise_for_status()
+
+
 def create_qualifier(host, token, name, vlans):
+    path = 'qualifiers'
     print(f'Creating qualifier: {name} with vlans: {vlans}')
     
-    path = 'qualifiers'
     headers = {
         'accept': 'application/json',
         'Content-Type': 'application/json',

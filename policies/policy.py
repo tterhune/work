@@ -15,7 +15,7 @@ def get_qualifiers(host, token):
         'Authorization': token
     }
 
-    url = defines.vURL.format(host=host, path=path, version='v1')
+    url = defines.vURL.format(host=host, headers=headers, path=path, version='v1')
     r = requests.get(url, headers=headers, verify=False)
     r.raise_for_status()
 
@@ -31,12 +31,28 @@ def get_qos_policies(host, token):
         'Authorization': token
     }
 
-    url = defines.vURL.format(host=host, path=path, version='v1')
+    url = defines.vURL.format(host=host, headers=headers, path=path, version='v1')
     r = requests.get(url, headers=headers, verify=False)
     r.raise_for_status()
 
     policies = r.json()['result']
     return policies
+
+
+def delete_policy(host, token, policy):
+    path = 'policies/qos/{}'.format(policy['uuid'])
+
+    print('Deleting policy: {}/{}'.format(policy['name'], policy['uuid']))
+
+    headers = {
+        'accept': 'application/json',
+        'Content-Type': 'application/json',
+        'Authorization': token
+    }
+
+    url = defines.vURL.format(host=host, headers=headers, path=path, version='v1')
+    r = requests.delete(url, headers=headers, verify=False)
+    r.raise_for_status()
 
 
 def delete_qualifier(host, token, qualifier):

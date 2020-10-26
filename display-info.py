@@ -11,12 +11,7 @@ import policies.switches as switch_module
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 
-def main(argv):
-    if len(argv) < 2:
-        print('Usage: {} <AFC host>'.format(argv[0]))
-        sys.exit(1)
-    
-    afc_host = argv[1]
+def main(afc_host):
     token = afc_module.get_token(afc_host)
     switches = switch_module.get_switches(afc_host, token)
     fabrics = switch_module.get_fabrics(afc_host, token)
@@ -35,4 +30,11 @@ def main(argv):
 
 
 if __name__ == '__main__':
-    main(sys.argv)
+    if len(sys.argv) < 2:
+        print('WARNING: Usage: {} <AFC host>'.format(sys.argv[0]))
+        print('Defaulting AFC to: \'localhost\' ')
+        my_afc_host = 'localhost'
+    else:
+        my_afc_host = sys.argv[1]
+
+    main(my_afc_host)

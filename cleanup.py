@@ -58,12 +58,7 @@ def cleanup_switch(switch):
     aruba_module.switch_logout(switch, cookie_jar)
 
 
-def main(argv):
-    if len(argv) < 2:
-        print('Usage: {} <AFC host>'.format(argv[0]))
-        sys.exit(1)
-    
-    afc_host = argv[1]
+def main(afc_host):
     token = afc_module.get_token(afc_host)
     
     policies = policies_module.get_qos_policies(afc_host, token)
@@ -78,4 +73,10 @@ def main(argv):
 
 
 if __name__ == '__main__':
-    main(sys.argv)
+    if len(sys.argv) < 2:
+        print('WARNING: Usage: {} [<AFC host>], default is \'localhost\''.format(sys.argv[0]))
+        my_afc_host = 'localhost'
+    else:
+        my_afc_host = sys.argv[1]
+
+    main(my_afc_host)

@@ -26,7 +26,7 @@ def main(argv):
     policies = policy_module.get_qos_policies(afc_host, token)
     policy_module.display(policies, qualifiers)
 
-    for switch in switches:
+    for switch in sorted(switches, key=lambda s: s['name']):
         cookie_jar = aruba_module.switch_login(switch)
         classifiers = aruba_module.get_switch_classes(switch, cookie_jar)
         policies = aruba_module.get_switch_policies(switch, cookie_jar)

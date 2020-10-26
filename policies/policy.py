@@ -179,7 +179,7 @@ def display(policies, qualifiers):
     if not qualifiers:
         print('\t... no qualifiers configured')
 
-    print('\nPolicy Info:')
+    print('\nAFC Policy Info:')
     for policy in policies:
         print('\tPolicy: {}'.format(pprint.pformat(policy, indent=4)))
 

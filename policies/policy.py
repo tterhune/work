@@ -129,10 +129,19 @@ def create_qos_policy(host, token, policy_name, local_priority, pcp, qualifier_u
 
 
 def display(policies, qualifiers):
-    print('Policy Info:')
-    for policy in policies:
-        print('Policy: {}'.format(pprint.pformat(policy, indent=4)))
+    print('\nAFC Policy Info:')
 
-    print('Qualifier Info:')
+    print('\nAFC Qualifier Info:')
     for qualifier in qualifiers:
         print('Qualifier: {}'.format(pprint.pformat(qualifier, indent=4)))
+
+    if not qualifiers:
+        print('\t... no qualifiers configured')
+
+    print('\nPolicy Info:')
+    for policy in policies:
+        print('\tPolicy: {}'.format(pprint.pformat(policy, indent=4)))
+
+    if not policies:
+        print('\t... no policies configured')
+

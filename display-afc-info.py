@@ -25,13 +25,6 @@ def main(argv):
     policies = policy_module.get_qos_policies(afc_host, token)
     policy_module.display(policies, qualifiers)
 
-    for switch in switches:
-        cookie_jar = aruba_module.switch_login(switch)
-        classifiers = aruba_module.get_switch_classes(switch, cookie_jar)
-        policies = aruba_module.get_switch_policies(switch, cookie_jar)
-        aruba_module.display(switch, policies, classifiers)
-        aruba_module.switch_logout(switch, cookie_jar)
-
 
 if __name__ == '__main__':
     main(sys.argv)

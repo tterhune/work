@@ -7,7 +7,7 @@ urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 def switch_login(switch):
     """Log into Aruba switch."""
-    print('Attempting to LOG INTO switch {} {}'.format(switch['name'], switch['ip_address']))
+    print('Attempting to LOG INTO switch {} ({})'.format(switch['name'], switch['ip_address']))
 
     url = 'https://{}/rest/v10.04/login'.format(switch['ip_address'])
 
@@ -24,7 +24,7 @@ def switch_login(switch):
     r = requests.post(url, headers=headers, params=params, verify=False)
     r.raise_for_status()
     
-    print('Successfully ({}) logged into switch {} / {}'.format(r.status_code,
+    print('Successfully ({}) logged into switch {} ({})'.format(r.status_code,
                                                                 switch['name'],
                                                                 switch['ip_address']))
 
@@ -32,7 +32,7 @@ def switch_login(switch):
 
 
 def switch_logout(switch, cookie_jar):
-    print('Attempting to LOGOUT of switch {} {}'.format(switch['name'], switch['ip_address']))
+    print('Attempting to LOGOUT of switch {} ({})'.format(switch['name'], switch['ip_address']))
 
     url = 'https://{}/rest/v10.04/logout'.format(switch['ip_address'])
 
@@ -43,7 +43,7 @@ def switch_logout(switch, cookie_jar):
 
     r = requests.post(url, headers=headers, cookies=cookie_jar, verify=False)
     r.raise_for_status()
-    print('Successfully ({}) logged out of {}/{}'.format(r.status_code,
+    print('Successfully ({}) logged out of {} ({})'.format(r.status_code,
                                                          switch['name'],
                                                          switch['ip_address']))
     
@@ -124,3 +124,20 @@ def delete_classifier(switch, cookie_jar, classifier):
     except requests.exceptions.HTTPError as e:
         print('Failed to delete classifier: {},{}'.format(classifier['name'], classifier['type']))
 
+
+def display(switch, classifiers, policies):
+    print('Policies and Classifiers for {}({}):'.format(switch['name'], switch['ip_address']))
+
+    print('\nClassifiers:')
+    for classifier in classifiers:
+        print('{}'.format(pprint.pformat(classifier, indent=4)))
+
+    if not classifiers:
+        print('\t... no classifiers configured')
+
+    print('\nPolicies:')
+    for policy in policies:
+        print('{}'.format(pprint.pformat(policy, indent=4)))
+
+    if not policies:
+        print('\t... no policies configured')

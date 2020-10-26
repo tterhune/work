@@ -1,3 +1,4 @@
+import pprint
 import requests
 import urllib3
 
@@ -23,10 +24,10 @@ def switch_login(switch):
     r = requests.post(url, headers=headers, params=params, verify=False)
     r.raise_for_status()
     
-    print('Successfully ({}) logged into switch {}/{}: cookies = {}'.format(r.status_code,
-                                                                            switch['name'],
-                                                                            switch['ip_address'],
-                                                                            r.cookies))
+    print('Successfully ({}) logged into switch {} / {}'.format(r.status_code,
+                                                                switch['name'],
+                                                                switch['ip_address']))
+
     return r.cookies
 
 
@@ -48,7 +49,7 @@ def switch_logout(switch, cookie_jar):
     
 
 def get_switch_classes(switch, cookie_jar):
-    url = 'https://{}/rest/v10.04/classes'.format(switch['ip_address'])
+    url = 'https://{}/rest/v10.04/system/classes'.format(switch['ip_address'])
 
     headers = {
         'accept': 'application/json',
@@ -62,13 +63,15 @@ def get_switch_classes(switch, cookie_jar):
     r = requests.get(url, headers=headers, params=params, cookies=cookie_jar, verify=False)
     r.raise_for_status()
 
-    classes = r.json()['result']
+    classifiers = r.json()
     
-    print('Got classes: {} from switch: {}'.format(classes, switch['name']))
+    print('Got classes: {} from switch: {}'.format(pprint.pformat(classifiers, indent=4),
+                                                   switch['name']))
+    return classifiers if classifiers else {}
 
 
 def get_switch_policies(switch, cookie_jar):
-    url = 'https://{}/rest/v10.04/policies'.format(switch['ip_address'])
+    url = 'https://{}/rest/v10.04/system/policies'.format(switch['ip_address'])
 
     headers = {
         'accept': 'application/json',
@@ -82,14 +85,16 @@ def get_switch_policies(switch, cookie_jar):
     r = requests.get(url, headers=headers, params=params, cookies=cookie_jar, verify=False)
     r.raise_for_status()
 
-    policies = r.json()['result']
-    print('Got policies: {} from switch {}'.format(switch['name'], policies))
+    policies = r.json()
+    print('Got policies: {} from switch {}'.format(pprint.pformat(policies, indent=4),
+                                                   switch['name']))
+    return policies if policies else {}
 
 
 def delete_policy(switch, cookie_jar, policy):
     print('Deleting policy: {} on switch: {}'.format(policy['name'], switch['name']))
 
-    url = 'https://{}/rest/v10.04/policies/{}'.format(switch['ip_address'], policy['name'])
+    url = 'https://{}/rest/v10.04/system/policies/{}'.format(switch['ip_address'], policy['name'])
 
     headers = {
         'accept': 'application/json',
@@ -103,15 +108,19 @@ def delete_policy(switch, cookie_jar, policy):
 def delete_classifier(switch, cookie_jar, classifier):
     print('Deleting classifier: {} on switch: {}'.format(classifier['name'], switch['name']))
 
-    url = 'https://{}/rest/v10.04/classes/{},{}'.format(switch['ip_address'],
-                                                        classifier['name'],
-                                                        classifier['type'])
+    url = 'https://{}/rest/v10.04/system/classes/{},{}'.format(switch['ip_address'],
+                                                               classifier['name'],
+                                                               classifier['type'])
 
     headers = {
         'accept': 'application/json',
         'Content-Type': 'application/json'
     }
 
-    r = requests.delete(url, headers=headers, cookies=cookie_jar, verify=False)
-    r.raise_for_status()
+    try:
+        r = requests.delete(url, headers=headers, cookies=cookie_jar, verify=False)
+        print('Status = {}'.format(r.status_code))
+        r.raise_for_status()
+    except requests.exceptions.HTTPError as e:
+        print('Failed to delete classifier: {},{}'.format(classifier['name'], classifier['type']))
 

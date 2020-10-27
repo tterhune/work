@@ -9,7 +9,16 @@ import policies.switches as switch_module
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 
-def main(afc_host, fabric_name):
+def main(afc_host: str, fabric_name: str) -> None:
+    """Create fabric, discover switches and assign to fabric.
+
+    Args:
+        afc_host (str): AFC host to talk to
+        fabric_name (str): name of our new fabric
+
+    Returns:
+        None
+    """
     token = afc_module.get_token(afc_host)
     
     fabric = switch_module.create_fabric(afc_host, token, fabric_name)
@@ -35,7 +44,7 @@ if __name__ == '__main__':
     elif len(sys.argv) < 3:
         print('WARNING: Usage: {} [<AFC host>], default is \'localhost\''.format(sys.argv[0]))
         my_afc_host = 'localhost'
-        my_fabric_name = sys.argv[2]
+        my_fabric_name = sys.argv[1]
     else:
         my_afc_host = sys.argv[1]
         my_fabric_name = sys.argv[2]

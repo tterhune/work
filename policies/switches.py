@@ -118,7 +118,19 @@ def assign_switch_to_fabric(host, token, fabric_uuid, switch_uuid, role):
     return r.json()['result']
 
 
-def discover_switch(host, token, hostname, afc_pwd, admin_pwd):
+def discover_switch(host: str, token: str, hostname: str, afc_pwd: str, admin_pwd: str) -> list:
+    """Make API call to discover a switch.
+
+    Args:
+        host (str): AFC host
+        token (str): API token
+        hostname (str): new switch FQDN
+        afc_pwd (str): password for afc_admin on switch
+        admin_pwd (str): admin switch password
+
+    Returns:
+        list
+    """
     # POST /api/v1/switches/discover
     # data: {"switches": ["six-sw-01.lab.plexxi.com"], "afc_admin_passwd": "plexxi",
     #        "admin_passwd": "plexxi"}
@@ -179,7 +191,7 @@ def do_discovery(afc_host, token, fabric_uuid):
     ]
 
     for switch in switches:
-        r = discover_switch(afc_host, token, switch['name'], afc_pwd, admin_pwd)
+        r = discover_switch(afc_host, token, switch['name'], afc_pwd, admin_pwd)[0]
         time.sleep(1)
         assign_switch_to_fabric(afc_host, token, fabric_uuid, r['switch_uuid'], switch['role'])
 

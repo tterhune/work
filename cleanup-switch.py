@@ -18,18 +18,17 @@ urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 def cleanup_switch(switch):
     cookie_jar = aruba_module.switch_login(switch)
 
-    classifiers = aruba_module.get_switch_classes(switch, cookie_jar)
-    for name, classifier in classifiers.items():
-        print('Found classifier: {} on switch: {}'.format(name, switch['name']))
-
-        aruba_module.delete_classifier(switch, cookie_jar, classifier)
-
     policies = aruba_module.get_switch_policies(switch, cookie_jar)
     for name, policy in policies.items():
         print('Found policy: {} on switch: {}'.format(name, switch['name']))
 
         aruba_module.delete_policy(switch, cookie_jar, policy)
 
+    classifiers = aruba_module.get_switch_classes(switch, cookie_jar)
+    for name, classifier in classifiers.items():
+        print('Found classifier: {} on switch: {}'.format(name, switch['name']))
+
+        aruba_module.delete_classifier(switch, cookie_jar, classifier)
     aruba_module.switch_logout(switch, cookie_jar)
 
 

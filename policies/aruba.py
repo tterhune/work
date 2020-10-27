@@ -70,6 +70,28 @@ def get_switch_classes(switch, cookie_jar):
     return classifiers if classifiers else {}
 
 
+def get_classifier_entries(switch, cookie_jar, classifier):
+    print('GET: classifier = {}'.format(pprint.pformat(classifier, indent=4)))
+    url = 'https://{}/rest/v10.04/system/classes/{},{}/cfg_entries'.format(
+        switch['ip_address'], classifier['name'], classifier['type'])
+
+    headers = {
+        'accept': 'application/json',
+        'Content-Type': 'application/json'
+    }
+
+    params = {
+        'depth': 2
+    }
+
+    r = requests.get(url, headers=headers, params=params, cookies=cookie_jar, verify=False)
+    r.raise_for_status()
+
+    classifier_entries = r.json()
+
+    return classifier_entries if classifier_entries else {}
+
+
 def get_switch_policies(switch, cookie_jar):
     url = 'https://{}/rest/v10.04/system/policies'.format(switch['ip_address'])
 
@@ -89,6 +111,56 @@ def get_switch_policies(switch, cookie_jar):
     # print('Got policies: {} from switch {}'.format(pprint.pformat(policies, indent=4),
     #                                               switch['name']))
     return policies if policies else {}
+
+
+def get_policy_entries(switch, cookie_jar, policy):
+    url = 'https://{}/rest/v10.04/system/policies/{}/cfg_entries'.format(switch['ip_address'],
+                                                                         policy['name'])
+
+    headers = {
+        'accept': 'application/json',
+        'Content-Type': 'application/json'
+    }
+
+    params = {
+        'depth': 2
+    }
+
+    r = requests.get(url, headers=headers, params=params, cookies=cookie_jar, verify=False)
+    r.raise_for_status()
+
+    policy_entries = r.json()
+    # print('Got policies: {} from switch {}'.format(pprint.pformat(policies, indent=4),
+    #                                               switch['name']))
+    return policy_entries if policy_entries else {}
+
+
+def get_policy_action_set(switch, cookie_jar, policy_entry):
+    print('Policy entry: {}'.format(pprint.pformat(policy_entry, indent=4)))
+    uri = policy_entry['policy_action_set']
+    url = 'https://{}{}'.format(switch['ip_address'], uri)
+
+    print('GET Policy Action Set: {}'.format(url))
+
+    # url = 'https://{}/rest/v10.04/system/policies/{}/cfg_entries/{}/policy_action_set'.format(
+    #    switch['ip_address'], policy['name'], policy_entry['sequence_number'])
+
+    headers = {
+        'accept': 'application/json',
+        'Content-Type': 'application/json'
+    }
+
+    params = {
+        'depth': 2
+    }
+
+    r = requests.get(url, headers=headers, params=params, cookies=cookie_jar, verify=False)
+    r.raise_for_status()
+
+    policy_action_set = r.json()
+    # print('Got policies: {} from switch {}'.format(pprint.pformat(policies, indent=4),
+    #                                               switch['name']))
+    return policy_action_set if policy_action_set else {}
 
 
 def delete_policy(switch, cookie_jar, policy):
@@ -132,8 +204,9 @@ def display(switch, classifiers, policies):
     if classifiers:
         print('Classifiers:')
         print('------------')
-        for classifier in classifiers:
-            print('\t{}'.format(pprint.pformat(classifier, indent=4)))
+        for name, classifier in classifiers.items():
+            print('\t{} state: {} code: {}'.format(name, classifier['status']['state'],
+                                                   classifier['status']['code']))
     else:
         print('{0: <12} {1}'.format('Classifiers:', '=> no classifiers configured'))
 
@@ -146,3 +219,19 @@ def display(switch, classifiers, policies):
         print('{0: <12} {1}'.format('Policies:', '=> no policies configured'))
 
     print('\n')
+
+
+def display_all(switch, classifiers, policies, classifier_entries, policy_entries):
+    display(switch, classifiers, policies)
+    for classifier_entry in classifier_entries:
+        print('Classifier Entry: {}'.format(classifier_entry[0]))
+        classifier_entry_dict = classifier_entry[1]
+        print('{0: <10} {1: <5}'.format('Priority', 'VLAN'))
+        print('{} {}'.format('-' * 10, '-' * 5))
+        for priority, ce in sorted(classifier_entry_dict.items(), key=lambda t: int(t[0])):
+            print('{0: <10} {1: <5}'.format(priority, ce['vlan']))
+
+    print('\n')
+    for policy_entry in policy_entries:
+        print('Policy Entry: {}'.format(pprint.pformat(policy_entry[0], indent=4)))
+        print('Policy Action Set: {}'.format(pprint.pformat(policy_entry[1], indent=4)))

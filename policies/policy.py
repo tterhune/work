@@ -176,14 +176,14 @@ def cleanup_policies(afc_host, token):
     for policy in policies:
         print('Policy: {}'.format(pprint.pformat(policy, indent=4)))
         for intf in policy.get('interfaces', []):
-            print('Intf: {}/{}'.format(intf['object_type'], intf['object_uuid']))
+            print('Intf: {} {}'.format(intf['object_type'], intf['object_uuid']))
             if intf['object_type'] == 'port':
                 port = ports_module.get_port(afc_host, token, intf['object_uuid'])
-                ports_module.patch_port_policies(afc_host, token, port, policy['uuid'],
+                ports_module.patch_port_policies(afc_host, token, port, [policy],
                                                  defines.PATCH_OP_REMOVE)
             if intf['object_type'] == 'lag':
                 lag = lags_module.get_lag(afc_host, token, intf['object_uuid'])
-                lags_module.patch_lag_policies(afc_host, token, lag, policy['uuid'],
+                lags_module.patch_lag_policies(afc_host, token, lag, [policy],
                                                defines.PATCH_OP_REMOVE)
         delete_policy(afc_host, token, policy)
 
@@ -193,6 +193,23 @@ def cleanup_qualifiers(afc_host, token):
     for qualifier in qualifiers:
         print('Qualifier: {}'.format(pprint.pformat(qualifier, indent=4)))
         delete_qualifier(afc_host, token, qualifier)
+
+
+def get_port_str(afc_host, token, ports):
+    port_str = str()
+    for p in ports:
+        s = switch_module.get_switch(afc_host, token, p['switch_uuid'])
+        port_str += '\t\t{}: {} {}\n'.format(s['name'], p['name'], p['uuid'])
+
+    return port_str
+
+
+def get_lag_str(afc_host, token, lags):
+    lag_str = str()
+    for lg in lags:
+        lag_str += '\t\t{} {} {}'.format(lg['name'], lg['type'], lg['uuid'])
+
+    return lag_str
 
 
 def display(afc_host, token, policies, qualifiers):
@@ -218,17 +235,18 @@ def display(afc_host, token, policies, qualifiers):
                 elif intf['object_type'] == 'lag':
                     lag = lags_module.get_lag(afc_host, token, intf['object_uuid'])
                     lags.append(lag)
-            print('\tPolicy: {}'.format(pprint.pformat(policy, indent=4)))
 
-            port_str = ''
-            for p in ports:
-                s = switch_module.get_switch(afc_host, token, p['switch_uuid'])
-                port_str += '{}: {} {} '.format(s['name'], p['name'], p['uuid'])
+            # print('\tPolicy: {}'.format(pprint.pformat(policy, indent=4)))
 
-            lag_str = [(lg['name'], lg['uuid']) for lg in lags]
+            port_str = get_port_str(afc_host, token, ports)
+            lag_str = get_lag_str(afc_host, token, lags)
 
-            print('\tPorts: {}'.format(port_str))
-            print('\tLAGs: {}'.format(lag_str))
+            print('\tPolicy: {} {} {} {}'.format(policy['name'],
+                                                 policy['pcp'],
+                                                 policy['local_priority'],
+                                                 policy['uuid']))
+            print('\tPorts: \n{}'.format(port_str))
+            print('\tLAGs: \n{}'.format(lag_str))
     else:
         print('{0: <15} {1}'.format('AFC Policy:', '=> no policies configured'))
 

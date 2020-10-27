@@ -1,5 +1,6 @@
 import pprint
 import requests
+from typing import List, Optional
 import urllib3
 import uuid
 
@@ -11,14 +12,14 @@ import policies.switches as switch_module
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 
-def generate_unique_name(prefix=None):
+def generate_unique_name(prefix: Optional[str] = None) -> str:
     unique_name = uuid.uuid4().hex
     if prefix:
         unique_name = prefix + '-' + unique_name
     return unique_name
 
 
-def get_qualifiers(host, token):
+def get_qualifiers(host: str, token: str) -> List[dict]:
     path = 'qualifiers'
     headers = {
         'accept': 'application/json',
@@ -34,7 +35,15 @@ def get_qualifiers(host, token):
     return qualifiers
 
 
-def get_qos_policies(host, token):
+def get_qos_policies(host: str, token: str) -> List[dict]:
+    """Get all QoS policies from a particular AFC.
+    Args:
+        host (str):
+        token (str):
+
+    Returns:
+        list[dict]
+    """
     path = 'policies/qos'
     headers = {
         'accept': 'application/json',

@@ -76,28 +76,6 @@ def main(afc_host):
     policies = aruba_module.get_switch_policies(leaf_switch, cookie_jar)
     aruba_module.display(leaf_switch, classifiers, policies)
 
-    # aruba_module.switch_logout(leaf_switch, cookie_jar)
-
-    print('\n\t{} DELETING POLICY: {} from PORT: {} {}\n'.format('-' * 10, policy['name'],
-                                                                 port['name'], '-' * 10))
-
-    time.sleep(2)
-
-    ports_module.patch_port_policies(afc_host, token, port, [policy], defines.PATCH_OP_REMOVE)
-    port = ports_module.get_port(afc_host, token, port['uuid'])
-    print('\nPort after deleting Policy: {}'.format(pprint.pformat(port, indent=4)))
-
-    print('\nCleaning up all qualifiers and policies')
-    policies_module.cleanup_qualifiers(afc_host, token)
-    policies_module.cleanup_policies(afc_host, token)
-
-    # Display switch info
-    # cookie_jar = aruba_module.switch_login(leaf_switch)
-
-    classifiers = aruba_module.get_switch_classes(leaf_switch, cookie_jar)
-    policies = aruba_module.get_switch_policies(leaf_switch, cookie_jar)
-    aruba_module.display(leaf_switch, classifiers, policies)
-
     aruba_module.switch_logout(leaf_switch, cookie_jar)
 
 

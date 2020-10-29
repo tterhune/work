@@ -16,26 +16,7 @@ urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 
 def display_all(leaf_switch, cookie_jar):
-    print('\nDisplay All')
-    print('-----------')
-
-    classifiers = aruba_module.get_switch_classes(leaf_switch, cookie_jar)
-    classifier_entries = []
-    for name, classifier in classifiers.items():
-        classifier_entry = aruba_module.get_classifier_entries(leaf_switch, cookie_jar, classifier)
-        classifier_entries.append((name, classifier_entry))
-
-    policies = aruba_module.get_switch_policies(leaf_switch, cookie_jar)
-    policy_entries = []
-    for name, policy in policies.items():
-        policy_entry_dict = aruba_module.get_policy_entries(leaf_switch, cookie_jar, policy)
-        for priority, policy_entry in policy_entry_dict.items():
-            policy_action_set = aruba_module.get_policy_action_set(leaf_switch, cookie_jar,
-                                                                   policy_entry)
-            policy_entries.append(((priority, policy_entry), policy_action_set))
-
-    aruba_module.display_all(leaf_switch, classifiers, policies, classifier_entries,
-                             policy_entries)
+    aruba_module.display_all(leaf_switch, cookie_jar)
     print('\n')
 
 

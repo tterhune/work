@@ -5,9 +5,8 @@ import sys
 import time
 import urllib3
 
-# from policies import afc as afc_module
 import policies.afc as afc_module
-# from policies import aruba as aruba_module
+from policies import aruba as aruba_module
 import shared.defines as defines
 import policies.policy as policies_module
 import policies.ports as ports_module

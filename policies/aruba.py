@@ -218,11 +218,13 @@ def display(switch, classifiers, policies):
     else:
         print('{0: <12} {1}'.format('Policies:', '=> no policies configured'))
 
-    print('\n')
 
-
-def display_all(switch, classifiers, policies, classifier_entries, policy_entries):
+def display_tree(switch, classifiers, policies, classifier_entries, policy_entries):
     display(switch, classifiers, policies)
+
+    if not classifier_entries:
+        print('{0: <20} {1}'.format('Classifier Entries:', '=> no classifier entries configured'))
+
     for classifier_entry in classifier_entries:
         print('Classifier Entry: {}'.format(classifier_entry[0]))
         classifier_entry_dict = classifier_entry[1]
@@ -231,7 +233,28 @@ def display_all(switch, classifiers, policies, classifier_entries, policy_entrie
         for priority, ce in sorted(classifier_entry_dict.items(), key=lambda t: int(t[0])):
             print('{0: <10} {1: <5}'.format(priority, ce['vlan']))
 
+    if not policy_entries:
+        print('{0: <20} {1}'.format('Policy Entries:', '=> no policy entries configured'))
+
     print('\n')
     for policy_entry in policy_entries:
         print('Policy Entry: {}'.format(pprint.pformat(policy_entry[0], indent=4)))
         print('Policy Action Set: {}'.format(pprint.pformat(policy_entry[1], indent=4)))
+
+
+def display_all(leaf_switch, cookie_jar):
+    classifiers = get_switch_classes(leaf_switch, cookie_jar)
+    classifier_entries = []
+    for name, classifier in classifiers.items():
+        classifier_entry = get_classifier_entries(leaf_switch, cookie_jar, classifier)
+        classifier_entries.append((name, classifier_entry))
+
+    policies = get_switch_policies(leaf_switch, cookie_jar)
+    policy_entries = []
+    for name, policy in policies.items():
+        policy_entry_dict = get_policy_entries(leaf_switch, cookie_jar, policy)
+        for priority, policy_entry in policy_entry_dict.items():
+            policy_action_set = get_policy_action_set(leaf_switch, cookie_jar, policy_entry)
+            policy_entries.append(((priority, policy_entry), policy_action_set))
+
+    display_tree(leaf_switch, classifiers, policies, classifier_entries, policy_entries)

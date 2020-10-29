@@ -64,7 +64,17 @@ def get_qos_policies(host: str, token: str) -> List[dict]:
     return policies
 
 
-def get_qos_policy(host, token, policy_uuid):
+def get_qos_policy(afc_host: str, token: str, policy_uuid: str) -> dict:
+    """Get a particular QoS policy based on UUID.
+
+    Args:
+        afc_host (str):
+        token (str):
+        policy_uuid (str):
+
+    Returns:
+        dict: Qos Policy dict
+    """
     path = 'policies/qos/{}'.format(policy_uuid)
     headers = {
         'accept': 'application/json',
@@ -77,7 +87,7 @@ def get_qos_policy(host, token, policy_uuid):
         'tags': True
     }
 
-    url = defines.vURL.format(host=host, headers=headers, path=path, version='v1')
+    url = defines.vURL.format(host=afc_host, headers=headers, path=path, version='v1')
     r = requests.get(url, headers=headers, verify=False, params=params)
     r.raise_for_status()
 

@@ -23,9 +23,10 @@ def main(afc_host):
 
     for switch in sorted(switches, key=lambda s: s['name']):
         cookie_jar = aruba_module.switch_login(switch)
-        classifiers = aruba_module.get_switch_classes(switch, cookie_jar)
-        policies = aruba_module.get_switch_policies(switch, cookie_jar)
-        aruba_module.display(switch, classifiers, policies)
+        # classifiers = aruba_module.get_switch_classes(switch, cookie_jar)
+        # policies = aruba_module.get_switch_policies(switch, cookie_jar)
+        # aruba_module.display(switch, classifiers, policies)
+        aruba_module.display_all(switch, cookie_jar)
         aruba_module.switch_logout(switch, cookie_jar)
 
 

@@ -4,13 +4,13 @@ from setuptools import setup, find_packages
 HERE = pathlib.Path(__file__).parent
 
 VERSION = '0.1.0'
-PACKAGE_NAME = 'afc-macs'
+PACKAGE_NAME = 'afc-test'
 AUTHOR = 'Tim Terhune'
 AUTHOR_EMAIL = 'tim.terhune@hpe.com'
-URL = 'https://github.com/tterhune/work/afc-macs'
+URL = 'https://github.com/tterhune/work'
 
 LICENSE = 'Apache License 2.0'
-DESCRIPTION = 'AFC MAC attachments scripts.'
+DESCRIPTION = 'AFC test scripts.'
 LONG_DESCRIPTION = (HERE / "README.md").read_text()
 LONG_DESC_TYPE = "text/markdown"
 

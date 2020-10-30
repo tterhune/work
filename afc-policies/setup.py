@@ -7,7 +7,7 @@ VERSION = '0.1.0'
 PACKAGE_NAME = 'afc-policies'
 AUTHOR = 'Tim Terhune'
 AUTHOR_EMAIL = 'tim.terhune@hpe.com'
-URL = 'https://github.com/tterhune/work/policies'
+URL = 'https://github.com/tterhune/work/afc-policies'
 
 LICENSE = 'Apache License 2.0'
 DESCRIPTION = 'AFC QoS Policy/Qualifier scripts.'

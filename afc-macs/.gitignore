@@ -1,0 +1,5 @@
+	afc_macs.egg-info/
+	build/
+	dist/
+	shared/__pycache__/
+	tests/

@@ -2,7 +2,7 @@ import copy
 import requests
 import urllib3
 
-import shared.defines as defines
+import defines
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
@@ -43,7 +43,7 @@ def get_lags(host, token, lag_type=None):
     return lags
 
 
-def patch_lag_policies(host, token, lag, policies, op):
+def patch_lag(host, token, lag, policies, op):
     path = 'lags'
 
     headers = {
@@ -100,21 +100,3 @@ def apply_policies_to_lag(host, token, lag, policies):
         ', '.join([p['name'] for p in policies]),
         lag['name'],
         lag['type']))
-
-
-def delete_policies_from_lag(host, token, lag):
-    path = 'lags/{}'.format(lag['uuid'])
-    
-    headers = {
-        'accept': 'application/json',
-        'Authorization': token,
-        'Content-Type': 'application/json'
-    } 
-
-    data = copy.deepcopy(lag)
-    data['qos_ingress_policies'] = []
-
-    url = defines.vURL.format(host=host, path=path, version='v1')
-    r = requests.put(url, headers=headers, json=data, verify=False)
-    r.raise_for_status()
-    print('Succeeded ({}) deleting ALL policies from LAG = {}'.format(r.status_code, lag['name']))

@@ -107,23 +107,3 @@ def apply_policies_to_port(host, token, port, policies):
         ', '.join([p['name'] for p in policies]),
         port['name']))
 
-
-def delete_policies_from_port(host, token, port):
-    if not port:
-        return False
-
-    path = 'ports/{}'.format(port['uuid'])
-
-    headers = {
-        'accept': 'application/json',
-        'Authorization': token,
-        'Content-Type': 'application/json'
-    }
-
-    data = copy.deepcopy(port)
-    data['qos_ingress_policies'] = []
-
-    url = defines.vURL.format(host=host, path=path, version='v1')
-    r = requests.put(url, headers=headers, json=data, verify=False)
-    r.raise_for_status()
-    print('Succeeded ({}) deleting ALL policies from port = {}'.format(r.status_code, port['name']))

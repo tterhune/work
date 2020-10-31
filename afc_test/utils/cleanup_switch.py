@@ -4,13 +4,9 @@ import pprint
 import sys
 import urllib3
 
-import policies.afc as afc_module
-import policies.aruba as aruba_module
-import shared.defines as defines
-import policies.lags as lags_module
-import policies.policy as policies_module
-import policies.ports as ports_module
-import policies.switches as switch_module
+import afc.afc_utils as afc_module
+import aruba.aruba_utils as aruba_module
+import afc.switches as switch_module
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 

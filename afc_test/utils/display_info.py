@@ -3,7 +3,9 @@
 import sys
 import urllib3
 
-import afc.afc_utils as afc_module
+import afc_test.afc.afc_utils as afc_module
+import afc_test.afc.switches as switches_module
+import afc_test.aruba.aruba_utils as aruba_module
 
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)

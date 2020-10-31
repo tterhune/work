@@ -6,3 +6,6 @@ policies/__pycache__/
 shared/__pycache__/
 .DS_Store
 .idea/
+afc_test/__pycache__/
+afc_test/afc/__pycache__/
+afc_test/aruba/__pycache__/

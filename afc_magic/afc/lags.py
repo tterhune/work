@@ -7,6 +7,14 @@ import shared.defines as defines
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 
+def get_lag_str(afc_host, token, lags):
+    lag_str = str()
+    for lg in lags:
+        lag_str += '\t\t{} {} {}'.format(lg['name'], lg['type'], lg['uuid'])
+
+    return lag_str
+
+
 def get_lag(host, token, lag_uuid):
     path = 'lags/{}'.format(lag_uuid)
     headers = {

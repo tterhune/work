@@ -208,27 +208,18 @@ def cleanup_policies(afc_host, token):
 
 
 def cleanup_qualifiers(afc_host, token):
+    """Delete all qualifiers on AFC.
+    Args:
+        afc_host (str): The AFC hostname
+        token (str): AFC token to use
+
+    Returns:
+        None
+    """
     qualifiers = get_qualifiers(afc_host, token)
     for qualifier in qualifiers:
         print('Qualifier: {}'.format(pprint.pformat(qualifier, indent=4)))
         delete_qualifier(afc_host, token, qualifier)
-
-
-def get_port_str(afc_host, token, ports):
-    port_str = str()
-    for p in ports:
-        s = switch_module.get_switch(afc_host, token, p['switch_uuid'])
-        port_str += '\t\t{}: {} {}\n'.format(s['name'], p['name'], p['uuid'])
-
-    return port_str
-
-
-def get_lag_str(afc_host, token, lags):
-    lag_str = str()
-    for lg in lags:
-        lag_str += '\t\t{} {} {}'.format(lg['name'], lg['type'], lg['uuid'])
-
-    return lag_str
 
 
 def display(afc_host, token, policies, qualifiers):

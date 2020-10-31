@@ -7,7 +7,26 @@ import shared.defines as defines
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 
+def get_port_str(afc_host, token, ports):
+    port_str = str()
+    for p in ports:
+        s = switch_module.get_switch(afc_host, token, p['switch_uuid'])
+        port_str += '\t\t{}: {} {}\n'.format(s['name'], p['name'], p['uuid'])
+
+    return port_str
+
+
 def get_port(host, token, port_uuid):
+    """Get AFC port based on port UUID.
+
+    Args:
+        host (str): AFC hostname
+        token (str): AFC token
+        port_uuid (str): UUID of port
+
+    Returns:
+        dict: The port
+    """
     path = 'ports/{}'.format(port_uuid)
     params = dict()
 

@@ -3,6 +3,8 @@
 import sys
 import urllib3
 
+import afc.afc_utils as afc_module
+
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 

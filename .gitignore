@@ -1,3 +1,8 @@
-.idea
+afc_test.egg-info/
+build/
+dist/
+dist/.idea
 policies/__pycache__/
 shared/__pycache__/
+.DS_Store
+.idea/

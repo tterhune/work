@@ -1,15 +1,11 @@
 #!/usr/bin/env python
 
-import pprint
 import sys
 import urllib3
 
-import shared.afc as afc_module
-import macs.aruba as aruba_module
-import shared.defines as defines
-import macs.lags as lags_module
-import shared.ports as ports_module
-import shared.switches as switch_module
+import afc_magic.afc.afc_utils as afc_module
+import afc_magic.aruba.aruba_utils as aruba_module
+import afc_magic.afc.switches as switch_module
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 

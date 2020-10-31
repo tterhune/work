@@ -3,9 +3,10 @@
 import sys
 import urllib3
 
-import afc_test.afc.afc_utils as afc_module
-import afc_test.afc.switches as switches_module
-import afc_test.aruba.aruba_utils as aruba_module
+import afc_magic.afc.afc_utils as afc_module
+import afc_magic.afc.switches as switches_module
+import afc_magic.aruba.policies as aruba_policies
+import afc_magic.aruba.aruba_utils as aruba_module
 
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
@@ -19,7 +20,7 @@ def main(afc_host):
 
     for switch in sorted(switches, key=lambda s: s['name']):
         cookie_jar = aruba_module.switch_login(switch)
-        aruba_module.display(switch, cookie_jar)
+        aruba_policies.display_all(switch, cookie_jar)
         aruba_module.switch_logout(switch, cookie_jar)
 
 

@@ -5,18 +5,19 @@ import sys
 import time
 import urllib3
 
-import policies.afc as afc_module
-import policies.aruba as aruba_module
-import shared.defines as defines
-import policies.policy as policies_module
-import policies.ports as ports_module
-import policies.switches as switch_module
+import afc_magic.afc.afc_utils as afc_module
+import afc_magic.aruba.aruba_utils as aruba_module
+import afc_magic.aruba.policies as aruba_policies
+import afc_magic.shared.defines as defines
+import afc_magic.afc.policy as policies_module
+import afc_magic.afc.ports as ports_module
+import afc_magic.afc.switches as switch_module
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 
 def display_all(leaf_switch, cookie_jar):
-    aruba_module.display_all(leaf_switch, cookie_jar)
+    aruba_policies.display_all(leaf_switch, cookie_jar)
     print('\n')
 
 

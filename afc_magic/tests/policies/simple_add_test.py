@@ -5,13 +5,11 @@ import sys
 import time
 import urllib3
 
-# from policies import afc as afc_module
-import policies.afc as afc_module
-# from policies import aruba as aruba_module
-import shared.defines as defines
-import policies.policy as policies_module
-import policies.ports as ports_module
-import policies.switches as switch_module
+import afc_magic.afc.afc_utils as afc_module
+import afc_magic.afc.policy as policies_module
+import afc_magic.afc.ports as ports_module
+import afc_magic.afc.switches as switch_module
+import afc_magic.shared.defines as defines
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 

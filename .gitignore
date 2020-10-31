@@ -1,4 +1,4 @@
-afc_test.egg-info/
+afc_magic.egg-info/
 build/
 dist/
 dist/.idea
@@ -6,6 +6,7 @@ policies/__pycache__/
 shared/__pycache__/
 .DS_Store
 .idea/
-afc_test/__pycache__/
-afc_test/afc/__pycache__/
-afc_test/aruba/__pycache__/
+afc_magic/__pycache__/
+afc_magic/afc/__pycache__/
+afc_magic/aruba/__pycache__/
+afc_magic/shared/__pycache__/

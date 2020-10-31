@@ -3,8 +3,8 @@
 import sys
 import urllib3
 
-import afc.afc_utils as afc_module
-import policies.policy as policies_module
+import afc_magic.afc.afc_utils as afc_module
+import afc_magic.afc.policy as policies_module
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 

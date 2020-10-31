@@ -2,7 +2,8 @@ import copy
 import requests
 import urllib3
 
-import shared.defines as defines
+import afc_magic.shared.defines as defines
+import afc_magic.afc.switches as switches_module
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
@@ -10,7 +11,7 @@ urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 def get_port_str(afc_host, token, ports):
     port_str = str()
     for p in ports:
-        s = switch_module.get_switch(afc_host, token, p['switch_uuid'])
+        s = switches_module.get_switch(afc_host, token, p['switch_uuid'])
         port_str += '\t\t{}: {} {}\n'.format(s['name'], p['name'], p['uuid'])
 
     return port_str

@@ -1,19 +1,27 @@
-# AFC Magic
+# AFC Tools
 
 ## What is this?
 
-- Use these python modules when you want to perform some *magic* with your AFC.
+* This also project also interacts with your Aruba switch fabric.
 
-- This also project also interacts with your Aruba switch fabric.
+* You can:
 
-- You can configure and discover a brand new fabric of switches
+    * Configure and discover a brand new fabric of switches
 
-- You can display your fabric of switches and their status
+    * You can display your fabric of switches and their status
 
-- You can configure _AFC QoS policies_ and _qualifiers_
+    * You can configure _AFC QoS policies_ and _qualifiers_
 
-- You can apply _AFC policies_ and _qualifiers_ to _LAGs_ and _Ports_
+    * You can apply _AFC policies_ and _qualifiers_ to _LAGs_ and _Ports_
 
-- You can display the current _policy_ and _classifier_ configuration of your Aruba switches
+    * You can display the current _policy_ and _classifier_ configuration of your Aruba switches
 
-- You can display AFC learned _MAC attachments_ and also what was learned on your Aruba switches
+    * You can display AFC learned _MAC attachments_ and also what was learned on your Aruba switches
+
+## Fabrics and Switches
+
+
+## Policies and Classifiers
+
+
+## MAC attachments

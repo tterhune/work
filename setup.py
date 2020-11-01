@@ -9,11 +9,11 @@ INSTALL_REQUIRES = [
 ]
 
 setuptools.setup(
-    name="afc_magic",
+    name="afc_tools",
     version="0.0.1",
     author="Tim Terhune",
     author_email="tim.terhune@hpe.com",
-    description="AFC Magic",
+    description="AFC Tools",
     long_description=long_description,
     long_description_content_type="text/markdown",
     url="https://github.com/tterhune/work",

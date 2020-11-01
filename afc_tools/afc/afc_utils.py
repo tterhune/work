@@ -1,7 +1,7 @@
 import requests
 import urllib3
 
-import afc_magic.shared.defines as defines
+import afc_tools.shared.defines as defines
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 

@@ -5,11 +5,11 @@ import sys
 import time
 import urllib3
 
-import afc_magic.afc.afc_utils as afc_module
-import afc_magic.afc.policy as policies_module
-import afc_magic.afc.ports as ports_module
-import afc_magic.afc.switches as switch_module
-import afc_magic.shared.defines as defines
+import afc_tools.afc.afc_utils as afc_module
+import afc_tools.afc.policy as policies_module
+import afc_tools.afc.ports as ports_module
+import afc_tools.afc.switches as switch_module
+import afc_tools.shared.defines as defines
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 

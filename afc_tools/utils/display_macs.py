@@ -3,11 +3,11 @@
 import sys
 import urllib3
 
-import afc_magic.afc.afc_utils as afc_module
-import afc_magic.afc.macs as macs_module
-import afc_magic.afc.switches as switches_module
-import afc_magic.aruba.macs as aruba_macs
-import afc_magic.aruba.aruba_utils as aruba_module
+import afc_tools.afc.afc_utils as afc_module
+import afc_tools.afc.macs as macs_module
+import afc_tools.afc.switches as switches_module
+import afc_tools.aruba.macs as aruba_macs
+import afc_tools.aruba.aruba_utils as aruba_module
 
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)

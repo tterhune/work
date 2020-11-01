@@ -5,8 +5,8 @@ import urllib3
 import uuid
 
 import shared.defines as defines
-import afc_magic.afc.lags as lags_module
-import afc_magic.afc.ports as ports_module
+import afc_tools.afc.lags as lags_module
+import afc_tools.afc.ports as ports_module
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 

@@ -2,8 +2,8 @@ import copy
 import requests
 import urllib3
 
-import afc_magic.shared.defines as defines
-import afc_magic.afc.switches as switches_module
+import afc_tools.shared.defines as defines
+import afc_tools.afc.switches as switches_module
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 

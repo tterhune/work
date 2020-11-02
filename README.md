@@ -48,4 +48,11 @@ NOTE: if you do not pass in an _afc-hostname_ the script assumes _localhost_
 
 ## Policies and Classifiers
 
+To display both Policies and Classifiers
+
+*display-policies* [afc-hostname]
+
+
+NOTE: if you do not pass in an _afc-hostname_ the script assumes _localhost_
+
 

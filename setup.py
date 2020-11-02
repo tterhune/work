@@ -17,6 +17,7 @@ setuptools.setup(
     scripts=['afc_tools/bin/display-switches',
              'afc_tools/bin/display-macs',
              'afc_tools/bin/display-neighbors',
+             'afc_tools/bin/display-policies',
              'afc_tools/bin/setup-fabric',
              'afc_tools/bin/cleanup-afc-policies'],
     url="https://github.com/tterhune/work",

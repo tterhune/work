@@ -20,8 +20,32 @@
 
 ## Fabrics and Switches
 
+To display switch information:
+
+*display-switches* [afc-hostname]
+
+NOTE: if you do not pass in an _afc-hostname_ the script assumes _localhost_
+
+
+## MAC Attachments
+
+To display both AFC and switch MAC attachments:
+
+*display-macs* [afc-hostname]
+
+
+NOTE: if you do not pass in an _afc-hostname_ the script assumes _localhost_
+
+## LLDP/CDP Neighbors
+
+To display both AFC and switch LLDP/CDP neighbors:
+
+*display-neighbors* [afc-hostname]
+
+
+NOTE: if you do not pass in an _afc-hostname_ the script assumes _localhost_
+
 
 ## Policies and Classifiers
 
 
-## MAC attachments

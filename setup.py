@@ -16,6 +16,7 @@ setuptools.setup(
     description="AFC Tools",
     long_description=long_description,
     long_description_content_type="text/markdown",
+    scripts=['bin/display-info'],
     url="https://github.com/tterhune/work",
     packages=setuptools.find_packages(),
     install_requires=INSTALL_REQUIRES,
@@ -24,5 +25,5 @@ setuptools.setup(
         "License :: OSI Approved :: MIT License",
         "Operating System :: OS Independent",
     ],
-    python_requires='>=3.6',
+    python_requires='>=2.7',
 )

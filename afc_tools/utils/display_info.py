@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 import sys
 import urllib3
 
@@ -22,13 +20,3 @@ def main(afc_host):
         cookie_jar = aruba_module.switch_login(switch)
         aruba_policies.display_all(switch, cookie_jar)
         aruba_module.switch_logout(switch, cookie_jar)
-
-
-if __name__ == '__main__':
-    if len(sys.argv) < 2:
-        print('WARNING: Usage: {} [<AFC host>], default is \'localhost\''.format(sys.argv[0]))
-        my_afc_host = 'localhost'
-    else:
-        my_afc_host = sys.argv[1]
-
-    main(my_afc_host)

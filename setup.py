@@ -5,9 +5,7 @@ with open("README.md", "r") as fh:
 
 INSTALL_REQUIRES = [
     'requests',
-    'urllib3',
-]
-
+    'urllib3', ] 
 setuptools.setup(
     name="afc_tools",
     version="0.0.1",
@@ -16,7 +14,11 @@ setuptools.setup(
     description="AFC Tools",
     long_description=long_description,
     long_description_content_type="text/markdown",
-    scripts=['bin/display-info'],
+    scripts=['afc_tools/bin/display-switches',
+             'afc_tools/bin/display-macs',
+             'afc_tools/bin/display-neighbors',
+             'afc_tools/bin/setup-fabric',
+             'afc_tools/bin/cleanup-afc-policies'],
     url="https://github.com/tterhune/work",
     packages=setuptools.find_packages(),
     install_requires=INSTALL_REQUIRES,

@@ -2,7 +2,7 @@
 
 import sys
 
-import afc_tools.utils.display_info as display
+import afc_tools.utils.display_switches as display
 
 if __name__ == '__main__':
     if len(sys.argv) < 2:

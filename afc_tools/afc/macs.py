@@ -3,7 +3,7 @@ import requests
 from typing import List
 import urllib3
 
-import shared.defines as defines
+import afc_tools.shared.defines as defines
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 

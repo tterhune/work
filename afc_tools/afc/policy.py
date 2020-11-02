@@ -4,7 +4,7 @@ from typing import List, Optional
 import urllib3
 import uuid
 
-import shared.defines as defines
+import afc_tools.shared.defines as defines
 import afc_tools.afc.lags as lags_module
 import afc_tools.afc.ports as ports_module
 

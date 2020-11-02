@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 
-import sys
 import urllib3
 
 import afc_tools.afc.afc_utils as afc_module

@@ -2,9 +2,6 @@ import urllib3
 
 import afc_tools.afc.afc_utils as afc_module
 import afc_tools.afc.switches as switches_module
-import afc_tools.aruba.policies as aruba_policies
-import afc_tools.aruba.aruba_utils as aruba_module
-
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 

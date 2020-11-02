@@ -21,8 +21,8 @@ def main(afc_host):
 
     for switch in sorted(switches, key=lambda s: s['name']):
         cookie_jar = aruba_module.switch_login(switch)
-        print('\n{}\n'.format('-' * 50))
-        print('Switch {} ({}):\n'.format(switch['name'], switch['ip_address']))
+        print('\n*** {0: ^40} ***'.format(
+            'Switch: ' + switch['name'] + ' (' + switch['ip_address'] + ')'))
         macs = aruba_macs.get_mac_attachments(switch, cookie_jar)
         aruba_macs.display(macs)
         macs = macs_module.get_macs(afc_host, token, switch_uuids=[switch['uuid']], interfaces=True)

@@ -28,10 +28,10 @@ def display(macs):
     # This is a nested dict, gross.
     total = 0
     if macs:
-        print('{0: ^20}  {1}  {2: ^10}  {3: ^7}'.format('MAC Address',
-                                                        'VLAN',
-                                                        'Interface',
-                                                        'Type'))
+        print('\n{0: ^20}  {1}  {2: ^10}  {3: ^7}'.format('MAC Address',
+                                                          'VLAN',
+                                                          'Interface',
+                                                          'Type'))
         print('{}  {}  {}  {}'.format('-' * 20, '-' * 4, '-' * 10, '-' * 7))
         for vlan, vlan_macs in macs.items():
             for type_mac_tuple, mac_dict in vlan_macs.items():

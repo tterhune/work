@@ -27,6 +27,8 @@ def get_mac_attachments(switch, cookie_jar):
 def display(macs):
     # This is a nested dict, gross.
     total = 0
+    print('Aruba MAC Attachments')
+    print('---------------------')
     if macs:
         print('\n{0: ^20}  {1}  {2: ^10}  {3: ^7}'.format('MAC Address',
                                                           'VLAN',

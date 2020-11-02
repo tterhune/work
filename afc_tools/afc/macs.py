@@ -65,4 +65,4 @@ def display(macs):
                 mac['interface_type'],
                 last_mod))
 
-    print(f'\nTotal AFC MAC Addresses: {total}')
+    print('\nTotal AFC MAC Addresses: {}'.format(total))

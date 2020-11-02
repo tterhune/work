@@ -32,5 +32,5 @@ def get_token(host):
     r = requests.post(url, headers=headers, verify=False)
     r.raise_for_status()
     token = r.json()['result']
-    print(f'Token = {token}')
+    print('Token = {}'.format(token))
     return token

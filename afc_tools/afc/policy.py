@@ -131,7 +131,7 @@ def create_qualifier(host, token, vlans, name=None):
         name = generate_unique_name('qual')
 
     path = 'qualifiers'
-    print(f'Creating qualifier: {name} with vlans: {vlans}')
+    print('Creating qualifier: {} with vlans: {}', name, vlans)
     
     headers = {
         'accept': 'application/json',
@@ -149,7 +149,7 @@ def create_qualifier(host, token, vlans, name=None):
     r.raise_for_status()
 
     qualifier_uuid = r.json()['result']
-    print(f'Successfully created qualifier UUID: {qualifier_uuid}')
+    print('Successfully created qualifier UUID: {}'.format(qualifier_uuid))
 
     return qualifier_uuid
 
@@ -185,7 +185,7 @@ def create_qos_policy(host, token, local_priority, pcp, qualifier_uuids, policy_
 
     policy_uuid = r.json()['result']
 
-    print(f'Created policy UUID = {policy_uuid}')
+    print('Created policy UUID = {}'.format(policy_uuid))
     return policy_uuid
 
 
@@ -247,8 +247,8 @@ def display(afc_host, token, policies, qualifiers):
 
             # print('\tPolicy: {}'.format(pprint.pformat(policy, indent=4)))
 
-            port_str = get_port_str(afc_host, token, ports)
-            lag_str = get_lag_str(afc_host, token, lags)
+            port_str = ports_module.get_port_str(afc_host, token, ports)
+            lag_str = lags_module.get_lag_str(afc_host, token, lags)
 
             print('\tPolicy: {} {} {} {}'.format(policy['name'],
                                                  policy['pcp'],

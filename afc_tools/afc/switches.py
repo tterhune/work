@@ -134,7 +134,7 @@ def discover_switch(host: str, token: str, hostname: str, afc_pwd: str, admin_pw
     # POST /api/v1/switches/discover
     # data: {"switches": ["six-sw-01.lab.plexxi.com"], "afc_admin_passwd": "plexxi",
     #        "admin_passwd": "plexxi"}
-    print(f'Trying to discover switch: {hostname}')
+    print('Trying to discover switch: {}'.format(hostname))
 
     path = 'switches/discover'
     headers = {

@@ -9,6 +9,8 @@ import afc_tools.afc.afc_utils as afc_module
 import afc_tools.afc.policy as policies_module
 import afc_tools.afc.ports as ports_module
 import afc_tools.afc.switches as switch_module
+import afc_tools.aruba.policies as aruba_policies
+import afc_tools.aruba.aruba_utils as aruba_module
 import afc_tools.shared.defines as defines
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
@@ -75,9 +77,9 @@ def main(afc_host):
     # Display switch info
     cookie_jar = aruba_module.switch_login(leaf_switch)
 
-    classifiers = aruba_module.get_switch_classes(leaf_switch, cookie_jar)
-    policies = aruba_module.get_switch_policies(leaf_switch, cookie_jar)
-    aruba_module.display(leaf_switch, classifiers, policies)
+    classifiers = aruba_policies.get_switch_classes(leaf_switch, cookie_jar)
+    policies = aruba_policies.get_switch_policies(leaf_switch, cookie_jar)
+    aruba_policies.display(leaf_switch, classifiers, policies)
 
     aruba_module.switch_logout(leaf_switch, cookie_jar)
 

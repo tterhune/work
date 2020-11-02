@@ -44,7 +44,7 @@ def get_macs(afc_host: str, token: str, switch_uuids=None, interfaces=False) -> 
 
 def display(macs):
     total = 0
-    print('AFC MAC Attachments')
+    print('\nAFC MAC Attachments')
     print('-------------------')
     if macs:
         print('\n{0: ^20}  {1}  {2: ^10}  {3: ^7} {4: ^18}'.format(

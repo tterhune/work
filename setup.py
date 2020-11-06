@@ -8,7 +8,7 @@ INSTALL_REQUIRES = [
     'urllib3', ] 
 setuptools.setup(
     name="afc_tools",
-    version="0.0.1",
+    version="0.0.2",
     author="Tim Terhune",
     author_email="tim.terhune@hpe.com",
     description="AFC Tools",
@@ -17,6 +17,7 @@ setuptools.setup(
     scripts=['afc_tools/bin/display-switches',
              'afc_tools/bin/display-macs',
              'afc_tools/bin/display-neighbors',
+             'afc_tools/bin/display-peers',
              'afc_tools/bin/display-policies',
              'afc_tools/bin/setup-fabric',
              'afc_tools/bin/cleanup-afc-policies'],

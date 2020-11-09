@@ -32,5 +32,21 @@ def get_token(host):
     r = requests.post(url, headers=headers, verify=False)
     r.raise_for_status()
     token = r.json()['result']
-    print('Token = {}'.format(token))
+    # print('Token = {}'.format(token))
     return token
+
+
+def get_version(host, token):
+    path = 'versions'
+    url = defines.vURL.format(host=host, path=path, version='v1')
+
+    headers = {
+        'Content-Type': 'application/json',
+        'Authorization': token,
+        'accept': 'application/json',
+    }
+
+    r = requests.get(url, headers=headers, verify=False)
+    r.raise_for_status()
+    software_version = r.json()['result']['software']
+    return software_version

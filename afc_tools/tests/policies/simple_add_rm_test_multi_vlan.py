@@ -27,7 +27,7 @@ def main(afc_host):
     # Display some info
     switches = switch_module.get_switches(afc_host, token)
     fabrics = switch_module.get_fabrics(afc_host, token)
-    switch_module.display(fabrics, switches)
+    switch_module.display(afc_host, fabrics, switches)
     policies_module.display_all(afc_host, token)
 
     time.sleep(1)

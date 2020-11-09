@@ -3,6 +3,7 @@ import time
 import urllib3
 
 import afc_tools.shared.defines as defines
+import afc_tools.afc.afc_utils as afc_utils
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
@@ -196,7 +197,7 @@ def do_discovery(afc_host, token, fabric_uuid):
         assign_switch_to_fabric(afc_host, token, fabric_uuid, r['switch_uuid'], switch['role'])
 
 
-def display(fabrics, switches):
+def display(afc_host, fabrics, switches):
     print('\nFabrics:')
     for fabric in fabrics:
         print('\tName: {} UUID: {}'.format(fabric['name'], fabric['uuid']))
@@ -216,12 +217,12 @@ def display(fabrics, switches):
                                                                  'Role',
                                                                  'Class'))
 
-    print('{0: <{1}} {2: <15} {3: <15} {4: <15} {5: <15}'.format('-'*max_name_len,
+    print('{0: <{1}} {2: <15} {3: <15} {4: <15} {5: <15}'.format('-' * max_name_len,
                                                                  max_name_len,
-                                                                 '-'*15,
-                                                                 '-'*15,
-                                                                 '-'*15,
-                                                                 '-'*15))
+                                                                 '-' * 15,
+                                                                 '-' * 15,
+                                                                 '-' * 15,
+                                                                 '-' * 15))
 
     for switch in sorted(switches, key=lambda s: s['name']):
         print('{0: <{1}} {2: <15} {3: <15} {4: <15} {5: <15}'.format(

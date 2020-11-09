@@ -10,4 +10,4 @@ def main(afc_host):
     token = afc_module.get_token(afc_host)
     switches = switches_module.get_switches(afc_host, token)
     fabrics = switches_module.get_fabrics(afc_host, token)
-    switches_module.display(fabrics, switches)
+    switches_module.display(afc_host, fabrics, switches)

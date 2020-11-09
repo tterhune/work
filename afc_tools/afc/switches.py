@@ -204,19 +204,28 @@ def display(fabrics, switches):
     if not fabrics:
         print('\t... no fabrics defined')
 
-    print('\n')
-    print('{0: <10} {1: <10} {2: <15} {3: <15} {4: <15}'.format('Name',
-                                                                'Status',
-                                                                'IP Address',
-                                                                'Role',
-                                                                'Class'))
+    max_name_len = 0
+    for switch in sorted(switches, key=lambda s: s['name']):
+        max_name_len = max(max_name_len, len(switch['name']))
 
-    print('{0: <10} {1: <10} {2: <15} {3: <15} {4: <15}'.format('-'*10, '-'*10, '-'*15, '-'*15,
+    print('\n')
+    print('{0: <{1}} {2: <10} {3: <15} {4: <15} {5: <15}'.format('Name',
+                                                                 max_name_len,
+                                                                 'Status',
+                                                                 'IP Address',
+                                                                 'Role',
+                                                                 'Class'))
+
+    print('{0: <10} {1: <10} {2: <15} {3: <15} {4: <15}'.format('-'*max_name_len,
+                                                                '-'*10,
+                                                                '-'*15,
+                                                                '-'*15,
                                                                 '-'*15))
 
     for switch in sorted(switches, key=lambda s: s['name']):
-        print('{0: <10} {1: <10} {2: <15} {3: <15} {4: <15}'.format(
+        print('{0: <{1}} {2: <10} {3: <15} {4: <15} {5: <15}'.format(
             switch['name'],
+            str(max_name_len),
             switch['status'],
             switch['ip_address'],
             switch['role'],

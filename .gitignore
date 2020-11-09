@@ -27,3 +27,6 @@ afc_tools/afc/__pycache__/switches.cpython-37.pyc
 afc_tools/shared/__pycache__/defines.cpython-37.pyc
 afc_tools/utils/__pycache__/
 afc_tools/afc/__pycache__/peers.cpython-37.pyc
+afc_tools/__pycache__/__init__.cpython-37.pyc
+afc_tools/afc/__pycache__/ports.cpython-37.pyc
+afc_tools/afc/__pycache__/switches.cpython-37.pyc

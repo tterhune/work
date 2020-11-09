@@ -74,11 +74,7 @@ class Connection:
         self._remote_port = remote_port
 
 
-def _connection_exists(peers: list, local_switch: str, connection: dict) -> bool:
-    local_port = connection['local_port_name']
-    remote_switch = connection['remote_station_name']
-    remote_port = connection['remote_port_name']
-
+def _connection_exists(peers: list, local_switch: str, local_port: str) -> bool:
     # See if the connection is in the list
     for peer in peers:
         # print(peer)
@@ -95,7 +91,7 @@ def display(peers: list) -> None:
     for peer in sorted(peers, key=lambda p: p['local_station_name']):
         peering[peer['local_station_name']].extend(peer['peers'])
 
-    # import pprint
+    import pprint
     # print('{}'.format(pprint.pformat(peering, indent=4)))
 
     for switch, peers in peering.items():
@@ -107,17 +103,23 @@ def display(peers: list) -> None:
         print('{0: ^20} {1: ^15} {2: ^15}'.format('-' * 13, '-' * 11, '-' * 10))
 
         for peer_entry in sorted(peers, key=lambda r: r['remote_station_name']):
+            # print('peer_entry = {}'.format(pprint.pformat(peer_entry, indent=4)))
             remote_switch = peer_entry['remote_station_name']
+            local_port_name = peer_entry['local_port_name']
 
             valid = False
-            if _connection_exists(peering[remote_switch], switch, peer_entry):
+            if _connection_exists(peering[remote_switch], switch, local_port_name):
                 valid = True
 
             print('{0: ^20} {1: ^15} {2: ^15} {3: ^10}'.format(
                   remote_switch,
                   peer_entry['remote_port_name'],
-                  peer_entry['local_port_name'],
-                  colorama.Fore.GREEN + 'valid' if valid else colorama.Fore.RED + 'invalid'))
+                  local_port_name,
+                  colorama.Fore.GREEN + 'Valid' if valid else
+                  colorama.Fore.RED + 'Missing {}/{} on {}'.format(
+                      switch,
+                      local_port_name,
+                      remote_switch)))
 
             total += 1
 

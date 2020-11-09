@@ -209,21 +209,22 @@ def display(fabrics, switches):
         max_name_len = max(max_name_len, len(switch['name']))
 
     print('\n')
-    print('{0: <{1}} {2: <10} {3: <15} {4: <15} {5: <15}'.format('Name',
+    print('{0: <{1}} {2: <15} {3: <15} {4: <15} {5: <15}'.format('Name',
                                                                  max_name_len,
                                                                  'Status',
                                                                  'IP Address',
                                                                  'Role',
                                                                  'Class'))
 
-    print('{0: <10} {1: <10} {2: <15} {3: <15} {4: <15}'.format('-'*max_name_len,
-                                                                '-'*10,
-                                                                '-'*15,
-                                                                '-'*15,
-                                                                '-'*15))
+    print('{0: <{1}} {2: <15} {3: <15} {4: <15} {5: <15}'.format('-'*max_name_len,
+                                                                 max_name_len,
+                                                                 '-'*15,
+                                                                 '-'*15,
+                                                                 '-'*15,
+                                                                 '-'*15))
 
     for switch in sorted(switches, key=lambda s: s['name']):
-        print('{0: <{1}} {2: <10} {3: <15} {4: <15} {5: <15}'.format(
+        print('{0: <{1}} {2: <15} {3: <15} {4: <15} {5: <15}'.format(
             switch['name'],
             str(max_name_len),
             switch['status'],

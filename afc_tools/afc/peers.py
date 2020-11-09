@@ -2,6 +2,7 @@ import collections
 import requests
 from typing import List
 import urllib3
+import colorama
 
 import afc_tools.shared.defines as defines
 
@@ -116,7 +117,7 @@ def display(peers: list) -> None:
                   remote_switch,
                   peer_entry['remote_port_name'],
                   peer_entry['local_port_name'],
-                  'valid' if valid else 'invalid'))
+                  colorama.Fore.GREEN + 'valid' if valid else colorama.Fore.RED + 'invalid'))
 
             total += 1
 

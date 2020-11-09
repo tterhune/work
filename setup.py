@@ -5,7 +5,8 @@ with open("README.md", "r") as fh:
 
 INSTALL_REQUIRES = [
     'requests',
-    'urllib3', ] 
+    'urllib3',
+    'colorama']
 setuptools.setup(
     name="afc_tools",
     version="0.0.2",

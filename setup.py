@@ -9,7 +9,7 @@ INSTALL_REQUIRES = [
     'colorama']
 setuptools.setup(
     name="afc_tools",
-    version="0.0.2",
+    version="0.0.3",
     author="Tim Terhune",
     author_email="tim.terhune@hpe.com",
     description="AFC Tools",

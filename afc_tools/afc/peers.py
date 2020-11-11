@@ -1,6 +1,5 @@
 import collections
 import requests
-from typing import List
 import urllib3
 import colorama
 
@@ -9,7 +8,7 @@ import afc_tools.shared.defines as defines
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 
-def get_peers(afc_host: str, token: str) -> List[dict]:
+def get_peers(afc_host, token):
     """Get all AFC peers, possibly for a set of switches.
 
     Args:
@@ -84,7 +83,7 @@ def _connection_exists(peers: list, local_switch: str, local_port: str) -> bool:
     return False
 
 
-def display(peers: list) -> None:
+def display(peers):
     total = 0
 
     peering = collections.defaultdict(list)

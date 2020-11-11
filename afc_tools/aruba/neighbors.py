@@ -1,4 +1,5 @@
 import pprint
+import datetime
 import requests
 import urllib3
 
@@ -59,7 +60,26 @@ def display(lldp_neighbors, cdp_neighbors):
     print('Total LLDP: {}'.format(total))
 
     total = 0
-    for key, cdp in cdp_neighbors.items():
-        print('{} => {}'.format(key, pprint.pformat(cdp, indent=4)))
-        total += 1
+    for intf, cdp in cdp_neighbors.items():
+        intf = intf.replace('%2F', '/')
+        for mac, cdp_info in cdp.items():
+            # print('{} => {}'.format(intf, pprint.pformat(cdp, indent=4)))
+            print('Type               : {}'.format('CDP'))
+            print('Learned on Intf    : {}'.format(intf))
+            print('MAC Address        : {}'.format(cdp_info['mac_addr']))
+            print('Device ID          : {}'.format(cdp_info['device_id']))
+            print('Port ID            : {}'.format(cdp_info['port_id']))
+            print('Platform           : {}'.format(cdp_info['platform']))
+            print('Software Version   : {}'.format(cdp_info['software_version']))
+            print('Native VLAN        : {}'.format(cdp_info['native_vlan']))
+            last_update = cdp_info.get('last_update')
+            if last_update:
+                last_update = datetime.datetime.fromtimestamp(last_update).strftime('%c')
+            else:
+                last_update = 'Unknown'
+            print('Last Updated       : {}'.format(last_update))
+            print('Capabilities       : {}'.format(cdp_info['capabilities']))
+            print('Duplex             : {}\n'.format(cdp_info['duplex']))
+
+            total += 1
     print('Total CDP : {}\n'.format(total))

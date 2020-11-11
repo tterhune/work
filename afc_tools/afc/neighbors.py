@@ -1,5 +1,4 @@
 import requests
-from typing import List
 import urllib3
 
 import afc_tools.shared.defines as defines
@@ -9,7 +8,7 @@ import afc_tools.afc.switches as switches_module
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 
-def get_neighbors(afc_host: str, token: str, switch_uuids=None, neighbor_type=None) -> List[dict]:
+def get_neighbors(afc_host, token, switch_uuids=None, neighbor_type=None):
     """Get all AFC neighbors, possibly for a set of switches.
 
     Args:
@@ -29,7 +28,7 @@ def get_neighbors(afc_host: str, token: str, switch_uuids=None, neighbor_type=No
     }
 
     params = dict()
-    params['include_stale'] = True
+    params['stale'] = True
 
     if switch_uuids:
         params['switches'] = switch_uuids

@@ -6,10 +6,6 @@ policies/__pycache__/
 shared/__pycache__/
 .DS_Store
 .idea/
-afc_magic/__pycache__/
-afc_magic/afc/__pycache__/
-afc_magic/aruba/__pycache__/
-afc_magic/shared/__pycache__/
 afc_tools.egg-info/
 afc_tools/afc/__pycache__/neighbors.cpython-37.pyc
 afc_tools/aruba/__pycache__/neighbors.cpython-37.pyc
@@ -31,3 +27,4 @@ afc_tools/__pycache__/__init__.cpython-37.pyc
 afc_tools/afc/__pycache__/ports.cpython-37.pyc
 afc_tools/afc/__pycache__/switches.cpython-37.pyc
 afc_tools/afc/__pycache__/afc_utils.cpython-37.pyc
+afc_tools/aruba/__pycache__/policies.cpython-37.pyc

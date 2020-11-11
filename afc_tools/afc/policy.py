@@ -1,6 +1,5 @@
 import pprint
 import requests
-from typing import List, Optional
 import urllib3
 import uuid
 
@@ -11,14 +10,14 @@ import afc_tools.afc.ports as ports_module
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 
-def generate_unique_name(prefix: Optional[str] = None) -> str:
+def generate_unique_name(prefix=None):
     unique_name = uuid.uuid4().hex
     if prefix:
         unique_name = prefix + '-' + unique_name
     return unique_name
 
 
-def get_qualifiers(host: str, token: str) -> List[dict]:
+def get_qualifiers(host, token):
     path = 'qualifiers'
     headers = {
         'accept': 'application/json',
@@ -34,7 +33,7 @@ def get_qualifiers(host: str, token: str) -> List[dict]:
     return qualifiers
 
 
-def get_qos_policies(host: str, token: str) -> List[dict]:
+def get_qos_policies(host, token):
     """Get all QoS policies from a particular AFC.
     Args:
         host (str):
@@ -63,7 +62,7 @@ def get_qos_policies(host: str, token: str) -> List[dict]:
     return policies
 
 
-def get_qos_policy(afc_host: str, token: str, policy_uuid: str) -> dict:
+def get_qos_policy(afc_host, token, policy_uuid):
     """Get a particular QoS policy based on UUID.
 
     Args:

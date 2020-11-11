@@ -1,6 +1,5 @@
 import datetime
 import requests
-from typing import List
 import urllib3
 
 import afc_tools.shared.defines as defines
@@ -8,7 +7,7 @@ import afc_tools.shared.defines as defines
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 
-def get_macs(afc_host: str, token: str, switch_uuids=None, interfaces=False) -> List[dict]:
+def get_macs(afc_host, token, switch_uuids=None, interfaces=False):
     """Get all AFC mac attachments, possibly for a set of switches.
 
     Args:

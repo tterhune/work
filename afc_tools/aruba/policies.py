@@ -161,9 +161,29 @@ def display(switch, classifiers, policies):
     if classifiers:
         print('Classifiers:')
         print('------------')
+
+        max_name_len = 0
         for name, classifier in classifiers.items():
-            print('\t{} state: {} code: {}'.format(name, classifier['status']['state'],
-                                                   classifier['status']['code']))
+            max_name_len = max(max_name_len, len(name))
+
+        print('{0: ^{4}} {1: <6} {2: <10} {3: <6}'.format(
+            'Classifier Name',
+            'Type',
+            'State',
+            'Code',
+            max_name_len))
+        print('{0} {1} {2} {3}'.format(
+            '-' * max_name_len,
+            '-' * 6,
+            '-' * 10,
+            '-' * 6))
+        for name, classifier in classifiers.items():
+            print('{0: <{4}} {1: <6} {2: <10} {3: <6}'.format(
+                classifier['name'],
+                classifier['type'],
+                classifier['status']['state'],
+                classifier['status']['code'],
+                max_name_len))
     else:
         print('{0: <12} {1}'.format('Classifiers:', '=> no classifiers configured'))
 
@@ -183,7 +203,7 @@ def display_tree(switch, classifiers, policies, classifier_entries, policy_entri
         print('{0: <20} {1}'.format('Classifier Entries:', '=> no classifier entries configured'))
 
     for classifier_entry in classifier_entries:
-        print('Classifier Entry: {}'.format(classifier_entry[0]))
+        # print('Classifier Entry: {}'.format(classifier_entry[0]))
         classifier_entry_dict = classifier_entry[1]
         print('{0: <10} {1: <5}'.format('Priority', 'VLAN'))
         print('{} {}'.format('-' * 10, '-' * 5))

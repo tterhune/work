@@ -57,7 +57,7 @@ def get_switches(host, token):
 
 
 def create_fabric(host, token, fabric_name):
-    print(f'Creating fabric: {fabric_name}')
+    print('Creating fabric: {}'.format(fabric_name))
 
     path = 'fabrics'
     headers = {

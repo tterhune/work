@@ -3,7 +3,6 @@ import time
 import urllib3
 
 import afc_tools.shared.defines as defines
-import afc_tools.afc.afc_utils as afc_utils
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
@@ -119,7 +118,7 @@ def assign_switch_to_fabric(host, token, fabric_uuid, switch_uuid, role):
     return r.json()['result']
 
 
-def discover_switch(host: str, token: str, hostname: str, afc_pwd: str, admin_pwd: str) -> list:
+def discover_switch(host, token, hostname, afc_pwd, admin_pwd):
     """Make API call to discover a switch.
 
     Args:

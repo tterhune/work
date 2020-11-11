@@ -73,7 +73,7 @@ class Connection:
         self._remote_port = remote_port
 
 
-def _connection_exists(peers: list, local_switch: str, local_port: str) -> bool:
+def _connection_exists(peers, local_switch, local_port):
     # See if the connection is in the list
     for peer in peers:
         # print(peer)

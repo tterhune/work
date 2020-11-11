@@ -157,7 +157,7 @@ def create_qos_policy(host, token, local_priority, pcp, qualifier_uuids, policy_
     if not policy_name:
         policy_name = generate_unique_name('policy')
 
-    print(f'Creating policy: {policy_name} with LP/PCP: {local_priority} {pcp}')
+    print('Creating policy: {} with LP/PCP: {} {}'.format(policy_name, local_priority, pcp))
 
     qualifiers = [{'object_uuid': quuid, 'object_type': 'qualifier'} for quuid in qualifier_uuids]
     print('With qualifiers: {}'.format(pprint.pformat(qualifiers, indent=4)))

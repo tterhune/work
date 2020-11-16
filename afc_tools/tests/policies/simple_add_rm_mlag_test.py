@@ -79,7 +79,7 @@ def main(afc_host):
 
     # Create an MLAG
     mlag, lag_ports = _create_mlag(afc_host, token, switches)
-    print('MLAG: {}'.format(mlag['user_label']))
+    print('MLAG: {}'.format(mlag['name']))
 
     # Create qualifier and policy
     qualifier_uuid = policies_module.create_qualifier(afc_host, token, '100')
@@ -90,11 +90,11 @@ def main(afc_host):
     time.sleep(1)
 
     print('\n\t{} ADDING POLICY: {} to MLAG: {} {}\n'.format('-' * 10, policy['name'],
-                                                             mlag['user_label'], '-' * 10))
+                                                             mlag['name'], '-' * 10))
 
     # Apply policy to MLAG
     lags_module.patch_lag_policies(afc_host, token, mlag, [policy], defines.PATCH_OP_ADD)
-    print('Successfully Added Policy: {} MLAG {}'.format(policy['name'], mlag['user_label']))
+    print('Successfully Added Policy: {} MLAG {}'.format(policy['name'], mlag['name']))
 
     print('\nDelaying 2 seconds ...\n')
 
@@ -119,7 +119,7 @@ def main(afc_host):
 
     time.sleep(2)
 
-    lags_module.patch_lag_policies(afc_host, token, mlag['uuid'], [policy], defines.PATCH_OP_REMOVE)
+    lags_module.patch_lag_policies(afc_host, token, mlag, [policy], defines.PATCH_OP_REMOVE)
     mlag = lags_module.get_lag(afc_host, token, mlag['uuid'])
     print('\nMLAG after deleting Policy: {}'.format(pprint.pformat(mlag, indent=4)))
 

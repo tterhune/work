@@ -193,7 +193,7 @@ def cleanup_policies(afc_host, token):
                                                  defines.PATCH_OP_REMOVE)
             if intf['object_type'] == 'lag':
                 lag = lags_module.get_lag(afc_host, token, intf['object_uuid'])
-                lags_module.patch_lag_policies(afc_host, token, lag['uuid'], [policy],
+                lags_module.patch_lag_policies(afc_host, token, lag, [policy],
                                                defines.PATCH_OP_REMOVE)
         delete_policy(afc_host, token, policy)
 

@@ -68,8 +68,8 @@ def main(afc_host):
     time.sleep(1)
 
     # Create an MLAG
-    mlag_uuid, lag_ports = _create_mlag(afc_host, token, switches)
-    print('MLAG: {}'.format(mlag_uuid))
+    mlag, lag_ports = _create_mlag(afc_host, token, switches)
+    print('MLAG: {}'.format(mlag['name']))
 
     # Create qualifier and policy
     qualifier_uuid = policies_module.create_qualifier(afc_host, token, '100')
@@ -83,8 +83,8 @@ def main(afc_host):
                                                              mlag_uuid, '-' * 10))
 
     # Apply policy to MLAG
-    lags_module.patch_lag_policies(afc_host, token, mlag_uuid, [policy], defines.PATCH_OP_ADD)
-    print('Successfully Added Policy: {} MLAG {}'.format(policy['name'], mlag_uuid))
+    lags_module.patch_lag_policies(afc_host, token, mlag, [policy], defines.PATCH_OP_ADD)
+    print('Successfully Added Policy: {} MLAG {}'.format(policy['name'], mlag['name']))
 
     print('\nDelaying 2 seconds ...\n')
 
@@ -93,7 +93,7 @@ def main(afc_host):
     # Display AFC info
     policies_module.display_all(afc_host, token)
 
-    mlag = lags_module.get_lag(afc_host, token, mlag_uuid)
+    mlag = lags_module.get_lag(afc_host, token, mlag['uuid'])
     print('\nMLAG after applying Policy: {}\n'.format(pprint.pformat(mlag, indent=4)))
 
     # Display switch info

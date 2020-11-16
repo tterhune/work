@@ -77,7 +77,7 @@ def main(afc_host):
     # Display switch info
     cookie_jar = aruba_module.switch_login(leaf_switch)
 
-    classifiers = aruba_policies.get_switch_classes(leaf_switch, cookie_jar)
+    classifiers = aruba_policies.get_switch_classes(cookie_jar, leaf_switch)
     policies = aruba_policies.get_switch_policies(leaf_switch, cookie_jar)
     aruba_policies.display(leaf_switch, classifiers, policies)
 

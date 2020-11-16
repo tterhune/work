@@ -5,7 +5,14 @@ urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 
 def switch_login(switch):
-    """Log into Aruba switch."""
+    """Log into Aruba switch.
+
+    Arguments:
+        switch (dict): AFC switch object
+
+    Returns:
+        dict: cookie jar
+    """
     # print('Attempting to LOG INTO switch {} ({})'.format(switch['name'], switch['ip_address']))
 
     url = 'https://{}/rest/v10.04/login'.format(switch['ip_address'])

@@ -1,20 +1,13 @@
 import pprint
 import requests
 import urllib3
-import uuid
 
 import afc_tools.shared.defines as defines
 import afc_tools.afc.lags as lags_module
 import afc_tools.afc.ports as ports_module
+import afc_tools.afc.afc_utils as utils
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
-
-
-def generate_unique_name(prefix=None):
-    unique_name = uuid.uuid4().hex
-    if prefix:
-        unique_name = prefix + '-' + unique_name
-    return unique_name
 
 
 def get_qualifiers(host, token):
@@ -127,10 +120,10 @@ def delete_qualifier(host, token, qualifier):
 
 def create_qualifier(host, token, vlans, name=None):
     if not name:
-        name = generate_unique_name('qual')
+        name = utils.generate_unique_name('qual')
 
     path = 'qualifiers'
-    print('Creating qualifier: {} with vlans: {}', name, vlans)
+    print('Creating qualifier: {} with vlans: {}'.format(name, vlans))
     
     headers = {
         'accept': 'application/json',
@@ -155,7 +148,7 @@ def create_qualifier(host, token, vlans, name=None):
 
 def create_qos_policy(host, token, local_priority, pcp, qualifier_uuids, policy_name=None):
     if not policy_name:
-        policy_name = generate_unique_name('policy')
+        policy_name = utils.generate_unique_name('policy')
 
     print('Creating policy: {} with LP/PCP: {} {}'.format(policy_name, local_priority, pcp))
 
@@ -200,7 +193,7 @@ def cleanup_policies(afc_host, token):
                                                  defines.PATCH_OP_REMOVE)
             if intf['object_type'] == 'lag':
                 lag = lags_module.get_lag(afc_host, token, intf['object_uuid'])
-                lags_module.patch_lag_policies(afc_host, token, lag, [policy],
+                lags_module.patch_lag_policies(afc_host, token, lag['uuid'], [policy],
                                                defines.PATCH_OP_REMOVE)
         delete_policy(afc_host, token, policy)
 

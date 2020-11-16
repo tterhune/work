@@ -8,6 +8,15 @@ urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 
 def get_fabrics(host, token):
+    """Get all of the configured fabrics.
+
+    Arguments:
+        host (str): AFC hostname
+        token (str): AFC token to use
+
+    Returns:
+        list[dict]: list of fabric dicts
+    """
     path = 'fabrics'
     headers = {
         'accept': 'application/json',

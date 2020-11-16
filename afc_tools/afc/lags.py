@@ -3,8 +3,68 @@ import requests
 import urllib3
 
 import afc_tools.shared.defines as defines
+import afc_tools.afc.afc_utils as utils
+
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+
+
+def _port_properties(port_uuids):
+    lacp = {
+        'mode': 'off',
+        'priority': 1,
+        'interval': 'fast',
+    }
+
+    speed = {
+        'current': 25000
+    }
+
+    port_properties_list = []
+    for port_uuid in port_uuids:
+        port_properties_list.append({
+            'lacp': lacp,
+            'speed': speed,
+            'port_uuids': [port_uuid]
+        })
+
+    return port_properties_list
+
+
+def create_lag(afc_host, token, port_uuids):
+    """Create a (m)LAG on one (or more) ports.
+
+    Args:
+        afc_host (str): AFC hostname
+        token (str): AFC token
+        port_uuids (list): one or more AFC port UUIDs
+
+    Returns:
+        str: UUID of the (m)LAG
+    """
+    path = 'lags'
+
+    data = dict(name=utils.generate_unique_name('lag'))
+    data['native_vlan'] = 0
+    data['ungrouped_vlans'] = '100'
+    data['vlan_group_uuids'] = []
+    data['port_properties'] = _port_properties(port_uuids)
+    data['lacp_fallback'] = False
+
+    headers = {
+        'accept': 'application/json',
+        'Authorization': token,
+        'Content-Type': 'application/json'
+    }
+
+    print('Create LAG on ports = {}'.format(port_uuids))
+
+    url = defines.vURL.format(host=afc_host, path=path, version='v1')
+    r = requests.post(url, headers=headers, json=data, verify=False)
+    r.raise_for_status()
+
+    lag = r.json()['result']
+    return lag
 
 
 def get_lag_str(afc_host, token, lags):
@@ -52,6 +112,18 @@ def get_lags(host, token, lag_type=None):
 
 
 def patch_lag_policies(host, token, lag, policies, op):
+    """Patch LAG specifying some operation for a list of policies.
+
+    Args:
+        host (str): AFC hostname
+        token (str): AFC token
+        lag (dict): AFC lag database object
+        policies (list): list of policies to apply
+        op (str): Add or Remove
+
+    Returns:
+        None
+    """
     path = 'lags'
 
     headers = {

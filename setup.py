@@ -6,7 +6,9 @@ with open("README.md", "r") as fh:
 INSTALL_REQUIRES = [
     'requests',
     'urllib3',
-    'colorama']
+    'colorama',
+    'tabulate',
+    'eventlet']
 setuptools.setup(
     name="afc_tools",
     version="0.0.5",
@@ -21,6 +23,8 @@ setuptools.setup(
              'afc_tools/bin/display-policies',
              'afc_tools/bin/setup-fabric',
              'afc_tools/bin/cleanup-afc-policies',
+             'afc_tools/bin/cleanup-switch-policies',
+             'afc_tools/bin/run-perf-test',
              'afc_tools/bin/display-peers'],
     url="https://github.com/tterhune/work",
     packages=setuptools.find_packages(),

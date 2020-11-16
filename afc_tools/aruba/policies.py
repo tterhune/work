@@ -5,7 +5,16 @@ import urllib3
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 
-def get_switch_classes(switch, cookie_jar):
+def get_switch_classes(cookie_jar, switch):
+    """Get classifiers for a switch.
+
+    Arguments:
+        cookie_jar (requests.CookieJar): requests cookie jar
+        switch (dict): AFC switch object
+
+    Returns:
+        dict: classifiers switch object, which is a dictionary
+    """
     url = 'https://{}/rest/v10.04/system/classes'.format(switch['ip_address'])
 
     headers = {
@@ -28,7 +37,7 @@ def get_switch_classes(switch, cookie_jar):
 
 
 def get_classifier_entries(switch, cookie_jar, classifier):
-    print('GET: classifier = {}'.format(pprint.pformat(classifier, indent=4)))
+    # print('GET: classifier = {}'.format(pprint.pformat(classifier, indent=4)))
     url = 'https://{}/rest/v10.04/system/classes/{},{}/cfg_entries'.format(
         switch['ip_address'], classifier['name'], classifier['type'])
 
@@ -120,7 +129,7 @@ def get_policy_action_set(switch, cookie_jar, policy_entry):
     return policy_action_set if policy_action_set else {}
 
 
-def delete_policy(switch, cookie_jar, policy):
+def delete_policy(cookie_jar, switch, policy):
     print('Deleting policy: {} on switch: {}'.format(policy['name'], switch['name']))
 
     url = 'https://{}/rest/v10.04/system/policies/{}'.format(switch['ip_address'], policy['name'])
@@ -134,7 +143,7 @@ def delete_policy(switch, cookie_jar, policy):
     r.raise_for_status()
 
 
-def delete_classifier(switch, cookie_jar, classifier):
+def delete_classifier(cookie_jar, switch, classifier):
     print('Deleting classifier: {} on switch: {}'.format(classifier['name'], switch['name']))
 
     url = 'https://{}/rest/v10.04/system/classes/{},{}'.format(switch['ip_address'],
@@ -152,6 +161,19 @@ def delete_classifier(switch, cookie_jar, classifier):
         r.raise_for_status()
     except requests.exceptions.HTTPError as e:
         print('Failed to delete classifier: {},{}'.format(classifier['name'], classifier['type']))
+
+
+def delete_all(cookie_jar, switch):
+    policies = get_switch_policies(switch, cookie_jar)
+    classifiers = get_switch_classes(cookie_jar, switch)
+
+    for name, policy in policies.items():
+        print('Deleting Policy: {}'.format(pprint.pformat(policy, indent=4)))
+        delete_policy(cookie_jar, switch, policy)
+
+    for name, classifier in classifiers.items():
+        print('Deleting Classifier: {}'.format(pprint.pformat(classifier, indent=4)))
+        delete_classifier(cookie_jar, switch, classifier)
 
 
 def display(switch, classifiers, policies):
@@ -220,7 +242,7 @@ def display_tree(switch, classifiers, policies, classifier_entries, policy_entri
 
 
 def display_all(leaf_switch, cookie_jar):
-    classifiers = get_switch_classes(leaf_switch, cookie_jar)
+    classifiers = get_switch_classes(cookie_jar, leaf_switch)
     classifier_entries = []
     for name, classifier in classifiers.items():
         classifier_entry = get_classifier_entries(leaf_switch, cookie_jar, classifier)

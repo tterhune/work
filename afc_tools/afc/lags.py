@@ -67,6 +67,29 @@ def create_lag(afc_host, token, port_uuids):
     return lag
 
 
+def delete_lags(afc_host, token, lag_uuids):
+    """Delete a bunch of LAGs.
+
+    Args:
+        afc_host (str): Hostname of the AFC
+        token (str): AFC token
+        lag_uuids (list): list of LAG UUIDs to delete
+    """
+    path = 'lags'
+    headers = {
+        'accept': 'application/json',
+        'Authorization': token,
+        'Content-Type': 'application/json'
+    }
+
+    params = dict()
+    params['lags'] = lag_uuids
+
+    url = defines.vURL.format(host=afc_host, path=path, version='v1')
+    r = requests.delete(url, headers=headers, params=params, verify=False)
+    r.raise_for_status()
+
+
 def get_lag_str(afc_host, token, lags):
     lag_str = str()
     for lg in lags:

@@ -80,7 +80,7 @@ def main(afc_host):
     time.sleep(1)
 
     print('\n\t{} ADDING POLICY: {} to MLAG: {} {}\n'.format('-' * 10, policy['name'],
-                                                             mlag_uuid, '-' * 10))
+                                                             mlag['uuid'], '-' * 10))
 
     # Apply policy to MLAG
     lags_module.patch_lag_policies(afc_host, token, mlag, [policy], defines.PATCH_OP_ADD)
@@ -100,7 +100,7 @@ def main(afc_host):
     for switch in switches:
         cookie_jar = aruba_module.switch_login(switch)
         classifiers = aruba_policies.get_switch_classes(cookie_jar, switch)
-        policies = aruba_policies.get_switch_policies(switch, cookie_jar)
+        policies = aruba_policies.get_switch_policies(cookie_jar, switch)
         aruba_policies.display(switch, classifiers, policies)
         aruba_module.switch_logout(switch, cookie_jar)
 

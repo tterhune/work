@@ -58,7 +58,7 @@ def get_classifier_entries(switch, cookie_jar, classifier):
     return classifier_entries if classifier_entries else {}
 
 
-def get_switch_policies(switch, cookie_jar):
+def get_switch_policies(cookie_jar, switch):
     url = 'https://{}/rest/v10.04/system/policies'.format(switch['ip_address'])
 
     headers = {
@@ -164,7 +164,7 @@ def delete_classifier(cookie_jar, switch, classifier):
 
 
 def delete_all(cookie_jar, switch):
-    policies = get_switch_policies(switch, cookie_jar)
+    policies = get_switch_policies(cookie_jar, switch)
     classifiers = get_switch_classes(cookie_jar, switch)
 
     for name, policy in policies.items():
@@ -248,7 +248,7 @@ def display_all(leaf_switch, cookie_jar):
         classifier_entry = get_classifier_entries(leaf_switch, cookie_jar, classifier)
         classifier_entries.append((name, classifier_entry))
 
-    policies = get_switch_policies(leaf_switch, cookie_jar)
+    policies = get_switch_policies(cookie_jar, leaf_switch)
     policy_entries = []
     for name, policy in policies.items():
         policy_entry_dict = get_policy_entries(leaf_switch, cookie_jar, policy)

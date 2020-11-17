@@ -110,7 +110,7 @@ def main(afc_host):
     for switch in switches:
         cookie_jar = aruba_module.switch_login(switch)
         classifiers = aruba_policies.get_switch_classes(cookie_jar, switch)
-        policies = aruba_policies.get_switch_policies(switch, cookie_jar)
+        policies = aruba_policies.get_switch_policies(cookie_jar, switch)
         aruba_policies.display(switch, classifiers, policies)
         aruba_module.switch_logout(switch, cookie_jar)
 

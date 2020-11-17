@@ -74,7 +74,7 @@ def main(afc_host):
     cookie_jar = aruba_module.switch_login(leaf_switch)
 
     classifiers = aruba_policies.get_switch_classes(cookie_jar, leaf_switch)
-    policies = aruba_policies.get_switch_policies(leaf_switch, cookie_jar)
+    policies = aruba_policies.get_switch_policies(cookie_jar, leaf_switch)
     aruba_policies.display(leaf_switch, classifiers, policies)
 
     # aruba_module.switch_logout(leaf_switch, cookie_jar)
@@ -96,7 +96,7 @@ def main(afc_host):
     # cookie_jar = aruba_module.switch_login(leaf_switch)
 
     classifiers = aruba_policies.get_switch_classes(cookie_jar, leaf_switch)
-    policies = aruba_policies.get_switch_policies(leaf_switch, cookie_jar)
+    policies = aruba_policies.get_switch_policies(cookie_jar, leaf_switch)
     aruba_policies.display(leaf_switch, classifiers, policies)
 
     aruba_module.switch_logout(leaf_switch, cookie_jar)

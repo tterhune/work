@@ -22,6 +22,7 @@ setuptools.setup(
              'afc_tools/bin/display-neighbors',
              'afc_tools/bin/display-policies',
              'afc_tools/bin/setup-fabric',
+             'afc_tools/bin/cleanup-fabric',
              'afc_tools/bin/cleanup-afc-policies',
              'afc_tools/bin/cleanup-switch-policies',
              'afc_tools/bin/run-perf-test',

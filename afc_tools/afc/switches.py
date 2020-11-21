@@ -32,6 +32,32 @@ def get_fabrics(host, token):
     return fabrics
 
 
+def delete_fabric(host, token, fabric_uuid):
+    path = 'fabrics/{}'.format(fabric_uuid)
+    headers = {
+        'accept': 'application/json',
+        'Authorization': token,
+        'Content-Type': 'application/json'
+    }
+
+    url = defines.vURL.format(host=host, path=path, version='v1')
+    r = requests.delete(url, headers=headers, verify=False)
+    r.raise_for_status()
+
+
+def delete_switch(host, token, switch_uuid):
+    path = 'switches/{}'.format(switch_uuid)
+    headers = {
+        'accept': 'application/json',
+        'Authorization': token,
+        'Content-Type': 'application/json'
+    }
+
+    url = defines.vURL.format(host=host, path=path, version='v1')
+    r = requests.delete(url, headers=headers, verify=False)
+    r.raise_for_status()
+
+
 def get_switch(host, token, switch_uuid):
     path = 'switches/{}'.format(switch_uuid)
     headers = {
@@ -168,41 +194,44 @@ def discover_switch(host, token, hostname, afc_pwd, admin_pwd):
     return result
 
 
-def do_discovery(afc_host, token, fabric_uuid):
+def do_discovery(afc_host, token, fabric_uuid, switch_prefix):
+    start = time.time()
     afc_pwd = 'plexxi'
     admin_pwd = 'plexxi'
     switches = [
         {
-            'name': 'six-sw-01.lab.plexxi.com',
+            'name': '{switch_prefix}-sw-01.lab.plexxi.com'.format(switch_prefix=switch_prefix),
             'role': defines.SWITCH_ROLE_LEAF
         },
         {
-            'name': 'six-sw-02.lab.plexxi.com',
+            'name': '{switch_prefix}-sw-02.lab.plexxi.com'.format(switch_prefix=switch_prefix),
             'role': defines.SWITCH_ROLE_LEAF
         },
         {
-            'name': 'six-sw-03.lab.plexxi.com',
+            'name': '{switch_prefix}-sw-03.lab.plexxi.com'.format(switch_prefix=switch_prefix),
             'role': defines.SWITCH_ROLE_SPINE
 
         },
         {
-            'name': 'six-sw-04.lab.plexxi.com',
+            'name': '{switch_prefix}-sw-04.lab.plexxi.com'.format(switch_prefix=switch_prefix),
             'role': defines.SWITCH_ROLE_SPINE
         },
         {
-            'name': 'six-sw-05.lab.plexxi.com',
+            'name': '{switch_prefix}-sw-05.lab.plexxi.com'.format(switch_prefix=switch_prefix),
             'role': defines.SWITCH_ROLE_BORDER_LEAF
         },
         {
-            'name': 'six-sw-06.lab.plexxi.com',
+            'name': '{switch_prefix}-sw-06.lab.plexxi.com'.format(switch_prefix=switch_prefix),
             'role': defines.SWITCH_ROLE_BORDER_LEAF
         }
     ]
 
     for switch in switches:
         r = discover_switch(afc_host, token, switch['name'], afc_pwd, admin_pwd)[0]
-        time.sleep(1)
+        # time.sleep(1)
         assign_switch_to_fabric(afc_host, token, fabric_uuid, r['switch_uuid'], switch['role'])
+
+    print('It took {} seconds to discover {} switches'.format(time.time() - start, len(switches)))
 
 
 def display(afc_host, fabrics, switches):

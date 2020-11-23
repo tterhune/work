@@ -80,6 +80,7 @@ def get_switch_policies(cookie_jar, switch):
 
 
 def get_policy_entries(switch, cookie_jar, policy):
+    print('GET policy entries for policy: {}'.format(policy['name']))
     url = 'https://{}/rest/v10.04/system/policies/{}/cfg_entries'.format(switch['ip_address'],
                                                                          policy['name'])
 
@@ -120,10 +121,17 @@ def get_policy_action_set(switch, cookie_jar, policy_entry):
         'depth': 2
     }
 
+    policy_action_set = None
     r = requests.get(url, headers=headers, params=params, cookies=cookie_jar, verify=False)
-    r.raise_for_status()
+    try:
+        r.raise_for_status()
+        policy_action_set = r.json()
+    except requests.exceptions.HTTPError:
+        if r.status_code == requests.codes.not_found:
+            print('*** Policy action set: {} not found'.format(policy_entry['policy_action_set']))
+        else:
+            raise
 
-    policy_action_set = r.json()
     # print('Got policies: {} from switch {}'.format(pprint.pformat(policies, indent=4),
     #                                               switch['name']))
     return policy_action_set if policy_action_set else {}

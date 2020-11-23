@@ -2,6 +2,7 @@ import collections
 import requests
 import urllib3
 import colorama
+import tabulate
 
 import afc_tools.shared.defines as defines
 

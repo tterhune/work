@@ -59,19 +59,23 @@ def setup_teardown(afc_host, token, fabric_name, switch_prefix):
     fabric = switch_module.create_fabric(afc_host, token, fabric_name)
 
     print('Discovering switches: {}'.format(switch_prefix))
-    switch_module.do_discovery(afc_host, token, fabric['uuid'], switch_prefix)
+    switch_module.do_discovery(afc_host, token, fabric['uuid'], switch_prefix, all_at_once=True)
 
-    sleep_time = 2
-    print('{} Sleeping for {} minutes {}'.format('-' * 20, sleep_time, '-' * 20 ))
-    time.sleep(sleep_time)
+    all_in_sync = False
+    while not all_in_sync:
+        all_in_sync = True
+        switches = switch_module.get_switches(afc_host, token)
+        for switch in switches:
+            if switch['status'] != 'SYNCED':
+                all_in_sync = False
+                print('Switch {} not in SYNC, but is instead: {}'.format(
+                    switch['name'],
+                    switch['status']))
+        if not all_in_sync:
+            eventlet.sleep(1)
 
     switches = switch_module.get_switches(afc_host, token)
     for switch in switches:
-        if switch['status'] != 'SYNCED':
-            print('Deleting switch {} not in SYNC, but is instead: {} status'.format(
-                switch['name'],
-                switch['status']))
-
         print('Deleting switch: {}'.format(switch['name']))
         switch_module.delete_switch(afc_host, token, switch['uuid'])
 
@@ -93,8 +97,8 @@ def main(afc_host, fabric_name, switch_prefix):
     if fabrics:
         print('Found some fabrics, cleaning up')
         for fabric in fabrics:
-            print('Deleting switch: {}'.format(fabric['name']))
-            switch_module.delete_switch(afc_host, token, fabric['uuid'])
+            print('Deleting fabric: {}'.format(fabric['name']))
+            switch_module.delete_fabric(afc_host, token, fabric['uuid'])
 
     eventlet.spawn(get_all, afc_host, token)
 

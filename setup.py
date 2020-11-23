@@ -11,7 +11,7 @@ INSTALL_REQUIRES = [
     'eventlet']
 setuptools.setup(
     name="afc_tools",
-    version="0.0.5",
+    version="0.0.6",
     author="Tim Terhune",
     author_email="tim.terhune@hpe.com",
     description="AFC Tools",

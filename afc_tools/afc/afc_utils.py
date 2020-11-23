@@ -27,20 +27,33 @@ def ping_afc(host):
     r.raise_for_status()
 
 
-def get_token(host):
+def _get_token(host, username, password):
     path = defines.TOKEN
     url = defines.vURL.format(host=host, path=path, version='v1')
 
     headers = {
         'accept': 'application/json',
-        'X-Auth-Username': 'admin',
-        'X-Auth-Password': 'plexxi'
+        'X-Auth-Username': username,
+        'X-Auth-Password': password
     } 
 
     r = requests.post(url, headers=headers, verify=False)
     r.raise_for_status()
+
     token = r.json()['result']
     # print('Token = {}'.format(token))
+    return token
+
+
+def get_token(host):
+    username = 'admin'
+    password = 'aruba'
+    try:
+        token = _get_token(host, username, password)
+    except requests.exceptions.HTTPError as e:
+        print('Token retrieval failed, trying different credentials')
+        token = _get_token(host, username, 'plexxi')
+
     return token
 
 

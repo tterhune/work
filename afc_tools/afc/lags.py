@@ -90,10 +90,10 @@ def delete_lags(afc_host, token, lag_uuids):
     r.raise_for_status()
 
 
-def get_lag_str(afc_host, token, lags):
+def get_lag_str(lags):
     lag_str = str()
     for lg in lags:
-        lag_str += '\t\t{} {} {}'.format(lg['name'], lg['type'], lg['uuid'])
+        lag_str += '{} {} {}\n'.format(lg['uuid'], lg['name'], lg['type'])
 
     return lag_str
 

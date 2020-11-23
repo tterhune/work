@@ -2,6 +2,7 @@ import urllib3
 
 import afc_tools.afc.afc_utils as afc_module
 import afc_tools.afc.switches as switches_module
+import afc_tools.afc.policy as policies_module
 import afc_tools.aruba.policies as aruba_policies
 import afc_tools.aruba.aruba_utils as aruba_module
 
@@ -14,6 +15,8 @@ def main(afc_host):
     switches = switches_module.get_switches(afc_host, token)
     fabrics = switches_module.get_fabrics(afc_host, token)
     switches_module.display(afc_host, fabrics, switches)
+
+    policies_module.display_all(afc_host, token)
 
     for switch in sorted(switches, key=lambda s: s['name']):
         cookie_jar = aruba_module.switch_login(switch)

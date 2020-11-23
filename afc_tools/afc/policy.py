@@ -214,12 +214,16 @@ def cleanup_qualifiers(afc_host, token):
 
 
 def display(afc_host, token, policies, qualifiers):
-    print('\nAFC Policy Info:')
+    print('\nAFC Policy Info')
 
     if qualifiers:
         print('AFC Qualifier:')
         for qualifier in qualifiers:
-            print('\tQualifier: {}'.format(pprint.pformat(qualifier, indent=4)))
+            print('\t{} {} {} {}'.format(
+                qualifier['uuid'],
+                qualifier['name'],
+                qualifier['vlans'],
+                qualifier['description']))
     else:
         print('{0: <15} {1}'.format('AFC Qualifier:', '=> no qualifiers configured'))
 
@@ -235,12 +239,13 @@ def display(afc_host, token, policies, qualifiers):
                     ports.append(port)
                 elif intf['object_type'] == 'lag':
                     lag = lags_module.get_lag(afc_host, token, intf['object_uuid'])
+                    print(lag)
                     lags.append(lag)
 
             # print('\tPolicy: {}'.format(pprint.pformat(policy, indent=4)))
 
             port_str = ports_module.get_port_str(afc_host, token, ports)
-            lag_str = lags_module.get_lag_str(afc_host, token, lags)
+            lag_str = lags_module.get_lag_str(lags)
 
             print('\tPolicy: {} {} {} {}'.format(policy['name'],
                                                  policy['pcp'],

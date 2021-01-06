@@ -1,4 +1,5 @@
 import requests
+import tabulate
 import urllib3
 
 import afc_tools.shared.defines as defines
@@ -72,3 +73,35 @@ def display(afc_host, token, neighbors):
             total += 1
 
     print('Total AFC Neighbors: {}\n'.format(total))
+
+    header = ['Type', 'Learned\nOn', 'Stale', 'Chassis\nID', 'Port\nID', 'System\nName']
+    table = []
+    peer_table = []
+    for neighbor in neighbors:
+        switch = switches_module.get_switch(afc_host, token, neighbor['switch_uuid'])
+        port = ports_module.get_port(afc_host, token, neighbor['port_uuid'])
+
+        learned_on = '{}\n{}'.format(switch['name'], port['name'])
+
+        row = [neighbor['neighbor_type'].upper(),
+               learned_on,
+               neighbor['stale'],
+               neighbor['chassis_id'],
+               neighbor['port_id'],
+               #neighbor['station_mac_address']
+               neighbor['system_name']]
+               # neighbor['system_description']
+               # neighbor.get('mgmt_address', 'None')
+               # neighbor.get('mgmt_address_ifnum', 'None')
+               # neighbor['port_description']
+               # neighbor['port_vlanid']
+               # neighbor['lag_id']
+               # neighbor['stale'])
+        if 'Aruba' in neighbor['system_description']:
+            peer_table.append(row)
+        else:
+            table.append(row)
+
+    print(tabulate.tabulate(peer_table, header, tablefmt='grid'))
+    print(tabulate.tabulate(table, header, tablefmt='grid'))
+

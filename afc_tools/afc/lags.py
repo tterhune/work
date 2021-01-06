@@ -4,12 +4,13 @@ import urllib3
 
 import afc_tools.shared.defines as defines
 import afc_tools.afc.afc_utils as utils
+import tabulate
 
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 
-def _port_properties(port_uuids):
+def _port_properties(port_uuids, mlag):
     lacp = {
         'mode': 'off',
         'priority': 1,
@@ -21,17 +22,24 @@ def _port_properties(port_uuids):
     }
 
     port_properties_list = []
-    for port_uuid in port_uuids:
+    if mlag:
+        for port_uuid in port_uuids:
+            port_properties_list.append({
+                'lacp': lacp,
+                'speed': speed,
+                'port_uuids': [port_uuid]
+            })
+    else:
         port_properties_list.append({
             'lacp': lacp,
             'speed': speed,
-            'port_uuids': [port_uuid]
+            'port_uuids': port_uuids
         })
 
     return port_properties_list
 
 
-def create_lag(afc_host, token, port_uuids):
+def create_lag(afc_host, token, port_uuids, mlag=True):
     """Create a (m)LAG on one (or more) ports.
 
     Args:
@@ -45,11 +53,12 @@ def create_lag(afc_host, token, port_uuids):
     path = 'lags'
 
     data = dict(name=utils.generate_unique_name('lag'))
-    data['native_vlan'] = 0
-    data['ungrouped_vlans'] = '100'
+    data['native_vlan'] = 1
+    data['ungrouped_vlans'] = '200'
     data['vlan_group_uuids'] = []
-    data['port_properties'] = _port_properties(port_uuids)
+    data['port_properties'] = _port_properties(port_uuids, mlag)
     data['lacp_fallback'] = False
+    data['enable_lossless'] = False
 
     headers = {
         'accept': 'application/json',
@@ -221,3 +230,10 @@ def delete_policies_from_lag(host, token, lag):
     r = requests.put(url, headers=headers, json=data, verify=False)
     r.raise_for_status()
     print('Succeeded ({}) deleting ALL policies from LAG = {}'.format(r.status_code, lag['name']))
+
+
+def display_lags(host, token, lags):
+    import pprint
+    header = ['Name', 'UUID', 'Type', 'MLAG']
+    for lag in lags:
+        print('LAG = {}'.format(pprint.pformat(lag)))

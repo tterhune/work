@@ -2,7 +2,73 @@ import pprint
 import requests
 import urllib3
 
+import afc_tools.aruba.interfaces as interfaces_module
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+
+
+def get_queue_stats(cookie_jar, switch, interface_name):
+    """Get queues for a switch.
+
+    Arguments:
+        cookie_jar (requests.CookieJar): requests cookie jar
+        switch (dict): AFC switch object
+        interface_name (str): name of intf
+
+    Returns:
+        dict: classifiers switch object, which is a dictionary
+    """
+    intf_name = interface_name.replace('/', '%2F')
+    url = 'https://{}/rest/v10.04/system/interfaces/{}'.format(switch['ip_address'], intf_name)
+    # GET "https://10.101.36.192/rest/v10.04/system/interfaces/1%2F1%2F1?attributes=queue_tx_bytes,queue_tx_errors,queue_tx_maxdepth,queue_tx_packets"
+    # "accept: application/json"
+    # GET https://diablo-sw-02.lab.plexxi.com/rest/v10.04/system/qos?attributes=queues&depth=2"
+    # "accept: application/json"
+
+    headers = {
+        'accept': 'application/json',
+        'Content-Type': 'application/json'
+    }
+    queues = ['queue_tx_bytes',
+              'queue_tx_errors',
+              'queue_tx_maxdepth',
+              'queue_tx_packets']
+
+    queue_names = ','.join(queues)
+
+    params = {
+        'depth': 2,
+        'attributes':  queue_names
+        # 'selector': 'statistics'
+    }
+
+    r = requests.get(url, headers=headers, params=params, cookies=cookie_jar, verify=False)
+    r.raise_for_status()
+
+    queue_stats = r.json()
+    return queue_stats
+
+    # print('Got qos: {} from switch: {}'.format(pprint.pformat(qos, indent=4), switch['name']))
+
+    # url = 'https://{}/rest/v10.04/system/queues'.format(switch['ip_address'])
+
+    # url = 'https://{}/rest/v10.04/system/q_profiles/factory-default/q_profile_entries'.format(switch['ip_address'])
+
+    # headers = {
+    #     'accept': 'application/json',
+    #     'Content-Type': 'application/json'
+    # }
+
+    # params = {
+    #     'depth': 2
+   #  }
+
+    # r = requests.get(url, headers=headers, params=params, cookies=cookie_jar, verify=False)
+    # r.raise_for_status()
+
+    # queues = r.json()
+    # print('Got queues: {} from switch: {}'.format(pprint.pformat(queues, indent=4), switch['name']))
+
+    # return queues if queues else {}
 
 
 def get_switch_classes(cookie_jar, switch):
@@ -128,9 +194,13 @@ def get_policy_action_set(switch, cookie_jar, policy_entry):
         policy_action_set = r.json()
     except requests.exceptions.HTTPError:
         if r.status_code == requests.codes.not_found:
-            print('*** Policy action set: {} not found'.format(policy_entry['policy_action_set']))
+            print('*** Policy action set: {} GET not found: {}'.format(
+                policy_entry['policy_action_set'],
+                r.status_code))
         else:
-            raise
+            print('*** Policy action set: {} GET failure: {}'.format(
+                policy_entry['policy_action_set'],
+                r.status_code))
 
     # print('Got policies: {} from switch {}'.format(pprint.pformat(policies, indent=4),
     #                                               switch['name']))
@@ -265,3 +335,14 @@ def display_all(leaf_switch, cookie_jar):
             policy_entries.append(((priority, policy_entry), policy_action_set))
 
     display_tree(leaf_switch, classifiers, policies, classifier_entries, policy_entries)
+
+    interfaces = interfaces_module.get_interfaces(leaf_switch, cookie_jar)
+
+    for interface_name, interface in interfaces.items():
+        if 'policy_in_cfg' in interface and interface['policy_in_cfg']:
+            print('{}: {}'.format(interface_name, interface['policy_in_cfg']))
+            # intf = interfaces_module.get_writable_intf(leaf_switch, cookie_jar, interface_name)
+            # print('writable {}: {}'.format(interface_name, pprint.pformat(intf, indent=4)))
+            queue_stats = get_queue_stats(cookie_jar, leaf_switch, interface_name)
+            print('{} queue_stats = {}'.format(interface_name, pprint.pformat(queue_stats, indent=4)))
+

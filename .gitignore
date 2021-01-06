@@ -30,3 +30,4 @@ afc_tools/afc/__pycache__/afc_utils.cpython-37.pyc
 afc_tools/aruba/__pycache__/policies.cpython-37.pyc
 afc_tools/tests/__pycache__/
 afc_tools/aruba/__pycache__/aruba_utils.cpython-37.pyc
+afc_tools/aruba/__pycache__/interfaces.cpython-37.pyc

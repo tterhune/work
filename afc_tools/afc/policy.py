@@ -239,7 +239,7 @@ def display(afc_host, token, policies, qualifiers):
                     ports.append(port)
                 elif intf['object_type'] == 'lag':
                     lag = lags_module.get_lag(afc_host, token, intf['object_uuid'])
-                    print(lag)
+                    print(lag['name'], lag['uuid'], lag['mlag'], lag['qos_ingress_policies'])
                     lags.append(lag)
 
             # print('\tPolicy: {}'.format(pprint.pformat(policy, indent=4)))

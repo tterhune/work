@@ -4,6 +4,7 @@ import requests
 import time
 import urllib3
 
+import tabulate
 import afc_tools.shared.defines as defines
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
@@ -325,29 +326,18 @@ def display(afc_host, fabrics, switches):
         max_name_len = max(max_name_len, len(switch['name']))
 
     print('\n')
-    print('{0: <{1}} {2: <15} {3: <15} {4: <15} {5: <15}'.format('Name',
-                                                                 max_name_len,
-                                                                 'Status',
-                                                                 'IP Address',
-                                                                 'Role',
-                                                                 'Class'))
 
-    print('{0: <{1}} {2: <15} {3: <15} {4: <15} {5: <15}'.format('-' * max_name_len,
-                                                                 max_name_len,
-                                                                 '-' * 15,
-                                                                 '-' * 15,
-                                                                 '-' * 15,
-                                                                 '-' * 15))
-
+    rows = []
     for switch in sorted(switches, key=lambda s: s['name']):
-        print('{0: <{1}} {2: <15} {3: <15} {4: <15} {5: <15} {6}'.format(
-            switch['name'],
-            str(max_name_len),
-            switch['status'],
-            switch['ip_address'],
-            switch['role'],
-            switch['switch_class'],
-            switch['uuid']))
+        row = [switch['name'],
+               switch['status'],
+               switch['ip_address'],
+               switch['role'],
+               switch['uuid']]
+        rows.append(row)
 
     if not switches:
         print('\t... no switches defined')
+    else:
+        header = ['Name', 'Status', 'IP\nAddress', 'Role', 'UUID']
+        print(tabulate.tabulate(rows, header, tablefmt='simple'))

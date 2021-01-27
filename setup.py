@@ -11,7 +11,7 @@ INSTALL_REQUIRES = [
     'eventlet']
 setuptools.setup(
     name="afc_tools",
-    version="0.0.7",
+    version="0.0.8",
     author="Tim Terhune",
     author_email="tim.terhune@hpe.com",
     description="AFC Tools",
@@ -19,6 +19,7 @@ setuptools.setup(
     long_description_content_type="text/markdown",
     scripts=['afc_tools/bin/display-switches',
              'afc_tools/bin/display-macs',
+             'afc_tools/bin/display-lags',
              'afc_tools/bin/display-neighbors',
              'afc_tools/bin/display-policies',
              'afc_tools/bin/setup-fabric',

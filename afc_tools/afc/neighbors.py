@@ -45,34 +45,36 @@ def get_neighbors(afc_host, token, switch_uuids=None, neighbor_type=None):
     return neighbors
 
 
-def display(afc_host, token, neighbors):
-    total = 0
-    print('AFC Neighbors')
-    print('-------------\n')
-    if neighbors:
-        for neighbor in neighbors:
-            print('Type              : {}'.format(neighbor['neighbor_type'].upper()))
-            print('Chassis ID        : {}'.format(neighbor['chassis_id']))
-            print('Port ID           : {}'.format(neighbor['port_id']))
-            print('Station MAC       : {}'.format(neighbor['station_mac_address']))
-            print('System Name       : {}'.format(neighbor['system_name']))
-            print('System Description: {}'.format(neighbor['system_description']))
-            print('Management Address: {}'.format(neighbor.get('mgmt_address', 'None')))
-            print('Management IF Num : {}'.format(neighbor.get('mgmt_address_ifnum', 'None')))
-            print('Port Description  : {}'.format(neighbor['port_description']))
-            print('Port VLAN ID      : {}'.format(neighbor['port_vlanid']))
-            print('LAG ID            : {}'.format(neighbor['lag_id']))
-            print('Stale             : {}'.format(neighbor['stale']))
+def display_full(neighbor, switch, port):
+    print('Type              : {}'.format(neighbor['neighbor_type'].upper()))
+    print('Chassis ID        : {}'.format(neighbor['chassis_id']))
+    print('Port ID           : {}'.format(neighbor['port_id']))
+    print('Station MAC       : {}'.format(neighbor['station_mac_address']))
+    print('System Name       : {}'.format(neighbor['system_name']))
+    print('System Description: {}'.format(neighbor['system_description']))
+    print('Management Address: {}'.format(neighbor.get('mgmt_address', 'None')))
+    print('Management IF Num : {}'.format(neighbor.get('mgmt_address_ifnum', 'None')))
+    print('Port Description  : {}'.format(neighbor['port_description']))
+    print('Port VLAN ID      : {}'.format(neighbor['port_vlanid']))
+    print('LAG ID            : {}'.format(neighbor['lag_id']))
+    print('Stale             : {}'.format(neighbor['stale']))
+    print('Learned on Switch : {}'.format(switch['name']))
+    print('Learned on Intf   : {} ({})'.format(port['name'], port['port_label']))
+    print('Last Modified     : {}'.format(neighbor['last_modified']))
 
+
+def display(afc_host, token, neighbors, verbose=False):
+    if verbose:
+        total = 0
+        print('AFC Neighbors')
+        print('-------------\n')
+        for neighbor in neighbors:
             switch = switches_module.get_switch(afc_host, token, neighbor['switch_uuid'])
             port = ports_module.get_port(afc_host, token, neighbor['port_uuid'])
-            print('Learned on Switch : {}'.format(switch['name']))
-            print('Learned on Intf   : {} ({})'.format(port['name'], port['port_label']))
-            print('Last Modified     : {}'.format(neighbor['last_modified']))
+            display_full(neighbor, switch, port)
             print('\n')
             total += 1
-
-    print('Total AFC Neighbors: {}\n'.format(total))
+        print('Total AFC Neighbors: {}\n'.format(total))
 
     header = ['Type', 'Learned\nOn', 'Stale', 'Chassis\nID', 'Port\nID', 'System\nName']
     table = []

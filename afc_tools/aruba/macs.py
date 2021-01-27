@@ -2,6 +2,8 @@ import pprint
 import requests
 import urllib3
 
+import tabulate
+
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 
@@ -24,28 +26,22 @@ def get_mac_attachments(switch, cookie_jar):
     return macs if macs else {}
 
 
-def display(macs):
-    # This is a nested dict, gross.
-    total = 0
-    print('\nAruba MAC Attachments')
-    print('---------------------')
-    if macs:
-        print('\n{0: ^20}  {1}  {2: ^10}  {3: ^7}'.format('MAC Address',
-                                                          'VLAN',
-                                                          'Interface',
-                                                          'Type'))
-        print('{}  {}  {}  {}'.format('-' * 20, '-' * 4, '-' * 10, '-' * 7))
-        for vlan, vlan_macs in macs.items():
-            for type_mac_tuple, mac_dict in vlan_macs.items():
-                total += 1
-                intf_dict = mac_dict['port']
-                if intf_dict:
-                    intf_name = list(intf_dict.keys())[0]
-                else:
-                    intf_name = 'unknown'
+def display(switch, macs):
+    if not macs:
+        print('No MAC addresses found for switch {}'.format(switch['name']))
+        return
 
-                print('{0: ^20}  {1: ^4}  {2: ^10}  {3: ^7}'.format(mac_dict['mac_addr'],
-                                                                    vlan,
-                                                                    intf_name,
-                                                                    mac_dict['from']))
-    print('\nTotal MAC addresses: {}'.format(total))
+    # This is a nested dict, gross.
+    header = ['MAC Address', 'VLAN', 'Interface', 'Type', 'Switch']
+    table = []
+    for vlan, vlan_macs in macs.items():
+        for type_mac_tuple, mac_dict in vlan_macs.items():
+            intf_dict = mac_dict['port']
+            if intf_dict:
+                intf_name = list(intf_dict.keys())[0]
+            else:
+                intf_name = 'unknown'
+            row = [mac_dict['mac_addr'], vlan, intf_name, mac_dict['from'], switch['name']]
+            table.append(row)
+
+    print(tabulate.tabulate(table, header, tablefmt='grid'))

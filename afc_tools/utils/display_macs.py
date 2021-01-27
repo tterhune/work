@@ -20,8 +20,8 @@ def main(afc_host):
         cookie_jar = aruba_module.switch_login(switch)
         print('\nSwitch: {} ({})'.format(switch['name'], switch['ip_address']))
         macs = aruba_macs.get_mac_attachments(switch, cookie_jar)
-        aruba_macs.display(macs)
+        aruba_macs.display(switch, macs)
         macs = macs_module.get_macs(afc_host, token, switch_uuids=[switch['uuid']], interfaces=True)
-        macs_module.display(macs)
+        macs_module.display(switch, macs)
 
         aruba_module.switch_logout(switch, cookie_jar)

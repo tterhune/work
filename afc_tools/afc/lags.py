@@ -1,13 +1,27 @@
 import copy
+import pprint
 import requests
 import urllib3
 
 import afc_tools.shared.defines as defines
 import afc_tools.afc.afc_utils as utils
+import afc_tools.afc.ports as ports_module
+import afc_tools.afc.switches as switches_module
 import tabulate
 
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+
+
+def _get_port(afc_host, token, switch):
+    ports = ports_module.get_ports(afc_host, token, switches=[switch['uuid']])
+    port = None
+    for port in ports:
+        if port['type'] == 'access' and port['admin_state'] == 'disabled':
+            print('Port = {}'.format(pprint.pformat(port, indent=4)))
+            break
+
+    return port
 
 
 def _port_properties(port_uuids, mlag):
@@ -39,6 +53,47 @@ def _port_properties(port_uuids, mlag):
     return port_properties_list
 
 
+def create_mlag(afc_host, token, switches, used_port_uuids=None):
+    """Create an MLAG across two switches.
+
+    Args:
+        afc_host (str): AFC hostname
+        token (str): AFC token
+        switches (list): list of AFC switch objects
+        used_port_uuids (list[str]): UUIDs of ports already used in other LAGs
+
+    Returns:
+        tuple (dict, list[tuple]): AFC LAG dict, and tuple of port, switch
+    """
+    used_port_uuids = [] if used_port_uuids is None else used_port_uuids
+
+    leaf_switches = list()
+    for switch in switches:
+        if switch['role'] == defines.SWITCH_ROLE_LEAF and switch['status'] == 'SYNCED':
+            leaf_switches.append(switch)
+
+    if len(leaf_switches) < 2:
+        print('Need two leaf switches that are in sync, only found: {}'.format(leaf_switches))
+        return
+
+    # Pick two ports on two different switches
+    lag_ports = []
+    for switch in leaf_switches:
+        port = _get_port(afc_host, token, switch)
+        if port['uuid'] not in used_port_uuids:
+            lag_ports.append((port, switch))
+
+    for lag_port in lag_ports:
+        print('Using port: {} on switch: {}'.format(lag_port[0]['name'], lag_port[1]['name']))
+
+    # Create MLAG
+    port_uuids = [lp[0]['uuid'] for lp in lag_ports]
+    mlag_uuid = create_lag(afc_host, token, port_uuids)
+
+    mlag = get_lag(afc_host, token, mlag_uuid)
+    return mlag, lag_ports
+
+
 def create_lag(afc_host, token, port_uuids, mlag=True):
     """Create a (m)LAG on one (or more) ports.
 
@@ -66,7 +121,7 @@ def create_lag(afc_host, token, port_uuids, mlag=True):
         'Content-Type': 'application/json'
     }
 
-    print('Create LAG on ports = {}'.format(port_uuids))
+    print('Create (m)LAG on ports = {}'.format(port_uuids))
 
     url = defines.vURL.format(host=afc_host, path=path, version='v1')
     r = requests.post(url, headers=headers, json=data, verify=False)
@@ -230,6 +285,39 @@ def delete_policies_from_lag(host, token, lag):
     r = requests.put(url, headers=headers, json=data, verify=False)
     r.raise_for_status()
     print('Succeeded ({}) deleting ALL policies from LAG = {}'.format(r.status_code, lag['name']))
+
+
+def display(host, token):
+    switches = switches_module.get_switches(host, token)
+    switch_map = {s['uuid']: s for s in switches}
+
+    headers = ['Switch Name', 'LAG name', 'Type', 'MLAG', 'UUID', 'Ports']
+    lags = get_lags(host, token, defines.LAG_TYPE_PROVISIONED)
+    lag_table = []
+
+    # lag_display = collections.defaultdict(list)
+    for lag in lags:
+        for port_info in lag['port_properties']:
+            switch_uuid = port_info['switch_uuid']
+            port_uuids = port_info['port_uuids']
+            ports = []
+            for port_uuid in port_uuids:
+                port = ports_module.get_port(host, token, port_uuid)
+                ports.append(port)
+
+            port_names = [p['name'] for p in ports]
+            port_names = '\n'.join(port_names)
+
+            switch_name = switch_map[switch_uuid]['name']
+            lag_info = [switch_name,
+                        lag['name'],
+                        lag['type'],
+                        lag['mlag'],
+                        lag['uuid'],
+                        port_names]
+            lag_table.append(lag_info)
+
+        print(tabulate.tabulate(lag_table, headers=headers))
 
 
 def display_lags(host, token, lags):

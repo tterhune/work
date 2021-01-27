@@ -77,22 +77,37 @@ def main(afc_host):
     switches = switch_module.get_switches(afc_host, token)
     fabrics = switch_module.get_fabrics(afc_host, token)
     switch_module.display(afc_host, fabrics, switches)
-    policies_module.display_all(afc_host, token)
 
     time.sleep(1)
 
     # Create an MLAG
-    mlag1, lag_ports = _create_mlag(afc_host, token, switches)
-    print('MLAG: {}'.format(mlag1['name']))
+    mlag, lag_ports = lags_module.create_mlag(afc_host, token, switches)
+    print('MLAG: {}'.format(mlag['name']))
 
     port_uuids = []
     for p, s in lag_ports:
+        print('\tPorts:')
+        print('\tPort: {} Switch: {}', p, s)
         port_uuids.append(p['uuid'])
 
-    mlag2, lag_ports2 = _create_mlag(afc_host, token, switches, port_uuids)
-    print('MLAG2: {}'.format(mlag2['name']))
+    # mlag2, lag_ports2 = lags_module.create_mlag(afc_host, token, switches, port_uuids)
+    # print('MLAG2: {}'.format(mlag2['name']))
 
-    lags_module.delete_lags(afc_host, token, [mlag1['uuid'], mlag2['uuid']])
+    # mlag = lags_module.get_lag(afc_host, token, mlag1['uuid'])
+    print('\nMLAG {}\n'.format(pprint.pformat(mlag, indent=4)))
+
+    # Display switch info
+    #for switch in switches:
+    #    cookie_jar = aruba_module.switch_login(switch)
+    #    aruba_module.switch_logout(switch, cookie_jar)
+
+    #for switch in switches:
+    #    cookie_jar = aruba_module.switch_login(switch)
+    #    aruba_module.switch_logout(switch, cookie_jar)
+
+    time.sleep(2)
+    print('Deleting MLAG: {}'.format(mlag['uuid']))
+    lags_module.delete_lags(afc_host, token, [mlag['uuid']])
 
 
 if __name__ == '__main__':

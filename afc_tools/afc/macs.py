@@ -3,6 +3,7 @@ import requests
 import urllib3
 
 import afc_tools.shared.defines as defines
+import tabulate
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
@@ -41,29 +42,22 @@ def get_macs(afc_host, token, switch_uuids=None, interfaces=False):
     return mac_attachments
 
 
-def display(macs):
-    total = 0
-    print('\nAFC MAC Attachments')
-    print('-------------------')
-    if macs:
-        print('\n{0: ^20}  {1}  {2: ^10}  {3: ^7} {4: ^18}'.format(
-            'AFC MAC Address',
-            'VLAN',
-            'Interface',
-            'Type',
-            'Last Modified'))
+def display(switch, macs):
+    if not macs:
+        print('No AFC MAC attachments found for switch {}'.format(switch['name']))
+        return
 
-        print('{}  {}  {}  {}  {}'.format('-' * 20, '-' * 4, '-' * 10, '-' * 7, '-' * 18))
-
-        for mac in macs:
-            last_mod = datetime.datetime.fromtimestamp(mac['last_modified']).strftime(
+    header = ['MAC Address', 'VLAN', 'Interface', 'Type', 'Last\nModified', 'Switch']
+    table = []
+    for mac in macs:
+        last_mod = datetime.datetime.fromtimestamp(mac['last_modified']).strftime(
                 '%m-%d-%Y %H:%M:%S')
-            total += 1
-            print('{0: ^20}  {1: ^4}  {2: ^10}  {3: ^7}  {4}'.format(
-                mac['mac_address'],
-                mac['vlan'],
-                mac['interface_object']['name'],
-                mac['interface_type'],
-                last_mod))
+        row = [mac['mac_address'],
+               mac['vlan'],
+               mac['interface_object']['name'],
+               mac['interface_type'],
+               last_mod,
+               switch['name']]
+        table.append(row)
+    print(tabulate.tabulate(table, header, tablefmt='grid'))
 
-    print('\nTotal AFC MAC Addresses: {}'.format(total))

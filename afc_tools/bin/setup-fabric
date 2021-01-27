@@ -16,6 +16,6 @@ if __name__ == '__main__':
     else:
         my_afc_host = sys.argv[1]
         my_fabric_name = sys.argv[2]
-        switch_prefix = sys.argv[2]
+        switch_prefix = sys.argv[3]
 
     setup.main(my_afc_host, my_fabric_name, switch_prefix)
